@@ -1,0 +1,416 @@
+{
+ "catppuccin-latte": {
+  "mode": "light",
+  "accent": "#1E66F5",
+  "accentFromTheme": "#1E66F5",
+  "accentAdjusted": false,
+  "accentContrastOnPanel": 4.91,
+  "ink": "#FFFFFF",
+  "inkContrast": 4.91,
+  "tags": [
+   "#D20F39",
+   "#D84E2B",
+   "#DF8E1D",
+   "#40A02B",
+   "#179299",
+   "#1E66F5",
+   "#EA76CB"
+  ]
+ },
+ "catppuccin": {
+  "mode": "dark",
+  "accent": "#89B4FA",
+  "accentFromTheme": "#89B4FA",
+  "accentAdjusted": false,
+  "accentContrastOnPanel": 8.42,
+  "ink": "#0B0D14",
+  "inkContrast": 9.22,
+  "tags": [
+   "#F38BA8",
+   "#F6B6AB",
+   "#F9E2AF",
+   "#A6E3A1",
+   "#94E2D5",
+   "#89B4FA",
+   "#F5C2E7"
+  ]
+ },
+ "ethereal": {
+  "mode": "dark",
+  "accent": "#7D82D9",
+  "accentFromTheme": "#7D82D9",
+  "accentAdjusted": false,
+  "accentContrastOnPanel": 5.12,
+  "ink": "#0B0D14",
+  "inkContrast": 5.61,
+  "tags": [
+   "#ED5B5A",
+   "#EB8B54",
+   "#E9BB4F",
+   "#92A593",
+   "#A3BFD1",
+   "#7D82D9",
+   "#C89DC1"
+  ]
+ },
+ "everforest": {
+  "mode": "dark",
+  "accent": "#7FBBB3",
+  "accentFromTheme": "#7FBBB3",
+  "accentAdjusted": false,
+  "accentContrastOnPanel": 8.16,
+  "ink": "#0B0D14",
+  "inkContrast": 8.93,
+  "tags": [
+   "#E67E80",
+   "#E09D7F",
+   "#DBBC7F",
+   "#A7C080",
+   "#83C092",
+   "#7FBBB3",
+   "#D699B6"
+  ]
+ },
+ "flexoki-light": {
+  "mode": "light",
+  "accent": "#205EA6",
+  "accentFromTheme": "#205EA6",
+  "accentAdjusted": false,
+  "accentContrastOnPanel": 6.54,
+  "ink": "#FFFFFF",
+  "inkContrast": 6.54,
+  "tags": [
+   "#D14D41",
+   "#D0772B",
+   "#D0A215",
+   "#879A39",
+   "#3AA99F",
+   "#205EA6",
+   "#CE5D97"
+  ]
+ },
+ "gruvbox": {
+  "mode": "dark",
+  "accent": "#7DAEA3",
+  "accentFromTheme": "#7DAEA3",
+  "accentAdjusted": false,
+  "accentContrastOnPanel": 7.14,
+  "ink": "#0B0D14",
+  "inkContrast": 7.82,
+  "tags": [
+   "#EA6962",
+   "#E1875C",
+   "#D8A657",
+   "#A9B665",
+   "#89B482",
+   "#7DAEA3",
+   "#D3869B"
+  ]
+ },
+ "hackerman": {
+  "mode": "dark",
+  "accent": "#82FB9C",
+  "accentFromTheme": "#82FB9C",
+  "accentAdjusted": false,
+  "accentContrastOnPanel": 13.71,
+  "ink": "#0B0D14",
+  "inkContrast": 15.0,
+  "tags": [
+   "#50F872",
+   "#50F7A3",
+   "#50F7D4",
+   "#4FE88F",
+   "#7CF8F7",
+   "#829DD4",
+   "#86A7DF"
+  ]
+ },
+ "jade-horse": {
+  "mode": "dark",
+  "accent": "#8BCBB1",
+  "accentFromTheme": "#8BCBB1",
+  "accentAdjusted": false,
+  "accentContrastOnPanel": 9.52,
+  "ink": "#0B0D14",
+  "inkContrast": 10.42,
+  "tags": [
+   "#D88D91",
+   "#D2AB8D",
+   "#C5CC91",
+   "#8BCBB1",
+   "#86C7C5",
+   "#96B7D0",
+   "#B7A1C8"
+  ]
+ },
+ "kanagawa": {
+  "mode": "dark",
+  "accent": "#DCD7BA",
+  "accentFromTheme": "#DCD7BA",
+  "accentAdjusted": false,
+  "accentContrastOnPanel": 12.22,
+  "ink": "#0B0D14",
+  "inkContrast": 13.38,
+  "tags": [
+   "#C34043",
+   "#C17158",
+   "#C0A36E",
+   "#76946A",
+   "#6A9589",
+   "#7E9CD8",
+   "#957FB8"
+  ]
+ },
+ "last-horizon": {
+  "mode": "dark",
+  "accent": "#B59790",
+  "accentFromTheme": "#B59790",
+  "accentAdjusted": false,
+  "accentContrastOnPanel": 6.58,
+  "ink": "#0B0D14",
+  "inkContrast": 7.2,
+  "tags": [
+   "#C38B7B",
+   "#FFA35C",
+   "#6B5E73",
+   "#87A9B0",
+   "#A5A0B6",
+   "#B59790",
+   "#C4D8E2"
+  ]
+ },
+ "lumon": {
+  "mode": "dark",
+  "accent": "#8BC9EB",
+  "accentFromTheme": "#8BC9EB",
+  "accentAdjusted": false,
+  "accentContrastOnPanel": 9.84,
+  "ink": "#0B0D14",
+  "inkContrast": 10.77,
+  "tags": [
+   "#4D86B0",
+   "#8BC9EB",
+   "#6FA4C9",
+   "#5E95BC",
+   "#B4E4F6",
+   "#6FB8E3",
+   "#8BC9EB"
+  ]
+ },
+ "lupine": {
+  "mode": "light",
+  "accent": "#3264EB",
+  "accentFromTheme": "#3264EB",
+  "accentAdjusted": false,
+  "accentContrastOnPanel": 5.05,
+  "ink": "#FFFFFF",
+  "inkContrast": 5.05,
+  "tags": [
+   "#C900C4",
+   "#026FDE",
+   "#026FDE",
+   "#4A2FD0",
+   "#0C67DE",
+   "#3264EB",
+   "#8A4AD7"
+  ]
+ },
+ "matte-black": {
+  "mode": "dark",
+  "accent": "#E68E0D",
+  "accentFromTheme": "#E68E0D",
+  "accentAdjusted": false,
+  "accentContrastOnPanel": 6.96,
+  "ink": "#0B0D14",
+  "inkContrast": 7.62,
+  "tags": [
+   "#D35F5F",
+   "#C63D3D",
+   "#B91C1C",
+   "#FFC107",
+   "#BEBEBE",
+   "#E68E0D",
+   "#D35F5F"
+  ]
+ },
+ "miasma": {
+  "mode": "dark",
+  "accent": "#78824B",
+  "accentFromTheme": "#78824B",
+  "accentAdjusted": false,
+  "accentContrastOnPanel": 4.3,
+  "ink": "#0B0D14",
+  "inkContrast": 4.71,
+  "tags": [
+   "#685742",
+   "#8D6242",
+   "#B36D43",
+   "#5F875F",
+   "#C9A554",
+   "#78824B",
+   "#BB7744"
+  ]
+ },
+ "nord": {
+  "mode": "dark",
+  "accent": "#81A1C1",
+  "accentFromTheme": "#81A1C1",
+  "accentAdjusted": false,
+  "accentContrastOnPanel": 6.59,
+  "ink": "#0B0D14",
+  "inkContrast": 7.21,
+  "tags": [
+   "#BF616A",
+   "#D5967A",
+   "#EBCB8B",
+   "#A3BE8C",
+   "#88C0D0",
+   "#81A1C1",
+   "#B48EAD"
+  ]
+ },
+ "retro-82": {
+  "mode": "dark",
+  "accent": "#FAA968",
+  "accentFromTheme": "#FAA968",
+  "accentAdjusted": false,
+  "accentContrastOnPanel": 9.24,
+  "ink": "#0B0D14",
+  "inkContrast": 10.11,
+  "tags": [
+   "#F85525",
+   "#FAA968",
+   "#E97B3C",
+   "#028391",
+   "#8CBFB8",
+   "#3F8F8A",
+   "#3F8F8A"
+  ]
+ },
+ "ristretto": {
+  "mode": "dark",
+  "accent": "#F38D70",
+  "accentFromTheme": "#F38D70",
+  "accentAdjusted": false,
+  "accentContrastOnPanel": 7.48,
+  "ink": "#0B0D14",
+  "inkContrast": 8.18,
+  "tags": [
+   "#FD6883",
+   "#FB9A77",
+   "#F9CC6C",
+   "#ADDA78",
+   "#85DACC",
+   "#F38D70",
+   "#A8A9EB"
+  ]
+ },
+ "rose-pine": {
+  "mode": "light",
+  "accent": "#56949F",
+  "accentFromTheme": "#56949F",
+  "accentAdjusted": false,
+  "accentContrastOnPanel": 3.42,
+  "ink": "#0B0D14",
+  "inkContrast": 5.67,
+  "tags": [
+   "#B4637A",
+   "#CF8057",
+   "#EA9D34",
+   "#286983",
+   "#D7827E",
+   "#56949F",
+   "#907AA9"
+  ]
+ },
+ "solitude": {
+  "mode": "dark",
+  "accent": "#798186",
+  "accentFromTheme": "#798186",
+  "accentAdjusted": false,
+  "accentContrastOnPanel": 4.47,
+  "ink": "#0B0D14",
+  "inkContrast": 4.9,
+  "tags": [
+   "#565D60",
+   "#FFA35C",
+   "#D9DBDC",
+   "#9FA5A9",
+   "#707070",
+   "#798186",
+   "#AEAEAE"
+  ]
+ },
+ "starship": {
+  "mode": "dark",
+  "accent": "#FF9F0A",
+  "accentFromTheme": "#FF9F0A",
+  "accentAdjusted": false,
+  "accentContrastOnPanel": 8.63,
+  "ink": "#0B0D14",
+  "inkContrast": 9.44,
+  "tags": [
+   "#FF5F4A",
+   "#FF6A3D",
+   "#FFC27A",
+   "#FF9F0A",
+   "#A6DCEF",
+   "#8FB8DE",
+   "#FF8FA3"
+  ]
+ },
+ "tokyo-night": {
+  "mode": "dark",
+  "accent": "#7AA2F7",
+  "accentFromTheme": "#7AA2F7",
+  "accentAdjusted": false,
+  "accentContrastOnPanel": 7.04,
+  "ink": "#0B0D14",
+  "inkContrast": 7.71,
+  "tags": [
+   "#F7768E",
+   "#EB927B",
+   "#E0AF68",
+   "#9ECE6A",
+   "#449DAB",
+   "#7AA2F7",
+   "#AD8EE6"
+  ]
+ },
+ "vantablack": {
+  "mode": "dark",
+  "accent": "#8D8D8D",
+  "accentFromTheme": "#8D8D8D",
+  "accentAdjusted": false,
+  "accentContrastOnPanel": 5.34,
+  "ink": "#0B0D14",
+  "inkContrast": 5.85,
+  "tags": [
+   "#A4A4A4",
+   "#B9B9B9",
+   "#CECECE",
+   "#B6B6B6",
+   "#B0B0B0",
+   "#8D8D8D",
+   "#9B9B9B"
+  ]
+ },
+ "white": {
+  "mode": "light",
+  "accent": "#6E6E6E",
+  "accentFromTheme": "#6E6E6E",
+  "accentAdjusted": false,
+  "accentContrastOnPanel": 5.1,
+  "ink": "#FFFFFF",
+  "inkContrast": 5.1,
+  "tags": [
+   "#2A2A2A",
+   "#D9652B",
+   "#4A4A4A",
+   "#3A3A3A",
+   "#3E3E3E",
+   "#1A1A1A",
+   "#2E2E2E"
+  ]
+ }
+}

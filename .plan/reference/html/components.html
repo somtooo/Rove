@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Rove design system · Components</title>
+
+</head>
+<body>
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0B0C10}
+.root{--accent:#7C9CFF;--ink:#0B0D14;--t1:#EDEFF5;--t2:rgba(237,239,245,.68);--t3:rgba(237,239,245,.52);--t4:rgba(237,239,245,.34);--line:rgba(255,255,255,.07);--line2:rgba(255,255,255,.11);--hover:rgba(255,255,255,.05);--fill:rgba(255,255,255,.06);--fill2:rgba(255,255,255,.10);--fill3:rgba(255,255,255,.15);--danger:#FF7A7A;--warn:#F2C55C;--ok:#62D6A0;--acc-soft:color-mix(in oklab,var(--accent) 20%,transparent);--acc-line:color-mix(in oklab,var(--accent) 60%,transparent);--acc-text:color-mix(in oklab,var(--accent) 75%,white);position:relative;overflow:hidden;font-family:Inter,system-ui,sans-serif;color:var(--t1);font-size:14px;line-height:20px;-webkit-font-smoothing:antialiased;font-feature-settings:'cv11','ss03'}
+.glass{--base:rgba(18,20,30,.52);--base-fx:blur(44px) saturate(1.7);--panel:rgba(13,15,22,.80);--panel-fx:blur(44px) saturate(1.3);--pop:rgba(32,35,48,.84);--pop-fx:blur(28px) saturate(1.7)}
+.solid{--base:#0F1013;--base-fx:none;--panel:#17181C;--panel-fx:none;--pop:#212328;--pop-fx:none}
+:where(.root) *{box-sizing:border-box}
+:where(.root) button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:left}
+:where(.root) input{font:inherit;color:inherit;background:none;border:0;outline:0}
+.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;flex:none;display:block}
+.i14{width:14px;height:14px}.i16{width:16px;height:16px}.i20{width:20px;height:20px}.i24{width:24px;height:24px}
+.ico{display:block;flex:none;filter:drop-shadow(0 3px 6px rgba(0,0,0,.28))}
+.wall{position:absolute;inset:0;width:100%;height:100%}
+.win{position:absolute;border-radius:16px;overflow:hidden;display:flex;background:var(--base);backdrop-filter:var(--base-fx);border:1px solid rgba(255,255,255,.10);box-shadow:0 40px 120px rgba(0,0,0,.55),0 8px 24px rgba(0,0,0,.35)}
+.side{width:244px;flex:none;display:flex;flex-direction:column;padding:12px 10px 12px 12px}
+.panel{flex:1;min-width:0;margin:8px 8px 8px 0;border-radius:12px;display:flex;flex-direction:column;background:var(--panel);backdrop-filter:var(--panel-fx);border:1px solid var(--line);overflow:hidden;position:relative}
+.sec{font-size:12px;line-height:16px;font-weight:500;color:var(--t3);padding:14px 10px 6px;display:flex;align-items:center;justify-content:space-between}
+.row{display:flex;align-items:center;gap:10px;height:32px;padding:0 10px;border-radius:8px;color:var(--t2);font-size:14px;width:100%}
+.row .i{color:var(--t3)}
+.row.on{background:var(--fill2);color:var(--t1);font-weight:500}
+.row.on .i{color:var(--accent)}
+.row.hov{background:var(--hover);color:var(--t1)}
+.row .end{margin-left:auto;display:flex;align-items:center;gap:6px;color:var(--t3);font-size:12px}
+.dot{width:8px;height:8px;border-radius:50%;flex:none}
+.tdot{width:14px;height:14px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.2)}
+.bar{height:4px;border-radius:2px;background:rgba(255,255,255,.09);overflow:hidden}
+.bar>div{height:100%;border-radius:2px;background:var(--accent)}
+.cap{font-size:12px;line-height:16px;color:var(--t3);font-variant-numeric:tabular-nums}
+.dev{display:flex;flex-direction:column;gap:6px;padding:7px 10px 9px;border-radius:8px}
+.dev .top{display:flex;align-items:center;gap:10px;color:var(--t2);font-size:14px}
+.dev .top .i{color:var(--t3)}
+.tb{height:56px;flex:none;display:flex;align-items:center;gap:10px;padding:0 12px 0 14px}
+.grp{display:flex;align-items:center;gap:2px;padding:2px;border-radius:10px;background:var(--fill)}
+.ib{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--t2);flex:none}
+.ib.on{background:var(--fill3);color:var(--t1);box-shadow:0 1px 2px rgba(0,0,0,.3)}
+.ib.dim{color:var(--t4)}
+.title{font-size:20px;line-height:26px;font-weight:600;letter-spacing:-.015em}
+.search{display:flex;align-items:center;gap:8px;height:32px;width:232px;padding:0 6px 0 10px;border-radius:10px;background:var(--fill);color:var(--t3);font-size:13px}
+.kbd{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 5px;border-radius:5px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.09);border-bottom-width:2px;font-size:10.5px;font-weight:600;letter-spacing:.03em;color:var(--t3);line-height:1;flex:none}
+.keys{display:inline-flex;gap:3px;margin-left:auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:32px;padding:0 12px;border-radius:9px;font-size:13px;font-weight:500;background:var(--fill2);color:var(--t1);flex:none;white-space:nowrap}
+.btn.pri{background:var(--accent);color:var(--ink);font-weight:600}
+.btn.ghost{background:none;color:var(--t2)}
+.btn.danger{background:color-mix(in oklab,var(--danger) 18%,transparent);color:var(--danger)}
+.btn.sm{height:26px;padding:0 9px;font-size:12px;border-radius:7px}
+.btn.lg{height:40px;padding:0 16px;font-size:14px;border-radius:11px}
+.menu{position:absolute;width:260px;padding:5px;border-radius:12px;background:var(--pop);backdrop-filter:var(--pop-fx);border:1px solid var(--line2);box-shadow:0 18px 50px rgba(0,0,0,.5),0 2px 8px rgba(0,0,0,.3);display:flex;flex-direction:column;z-index:20}
+.mi{display:flex;align-items:center;gap:10px;height:30px;padding:0 8px 0 10px;border-radius:7px;font-size:13.5px;color:var(--t1);width:100%}
+.mi .i{color:var(--t2);width:16px;height:16px}
+.mi .sc{margin-left:auto;font-size:12px;color:var(--t3)}
+.mi .slot{width:16px;flex:none;display:flex}
+.mi .slot .i{color:var(--accent);stroke-width:2.4}
+.mi.hl{background:var(--accent);color:var(--ink)}
+.mi.hl .i,.mi.hl .sc,.mi.hl .slot .i{color:rgba(11,13,20,.72)}
+.mi.hl .kbd{background:rgba(11,13,20,.12);border-color:rgba(11,13,20,.14);color:rgba(11,13,20,.7)}
+.mi.red{color:var(--danger)}.mi.red .i{color:var(--danger)}
+.mi.dis{color:var(--t4)}.mi.dis .i{color:var(--t4)}
+.msep{height:1px;background:var(--line2);margin:5px 8px}
+.mlab{font-size:11.5px;font-weight:500;color:var(--t3);padding:6px 10px 3px}
+.foot{height:38px;flex:none;display:flex;align-items:center;gap:10px;padding:0 10px 0 8px;border-top:1px solid var(--line);font-size:12.5px;color:var(--t2)}
+.crumbs{display:flex;align-items:center;gap:2px;min-width:0}
+.crumb{display:flex;align-items:center;gap:6px;height:26px;padding:0 7px;border-radius:7px;color:var(--t2);white-space:nowrap}
+.crumb .i{width:15px;height:15px;color:var(--t3)}
+.crumb.cur{color:var(--t1);font-weight:500;background:var(--fill)}
+.crumb.cur .i{color:var(--accent)}
+.csep{color:var(--t4);width:14px;height:14px}
+.num{font-variant-numeric:tabular-nums}
+.gh{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--t2);height:28px;letter-spacing:-.005em}
+.gh .gc{font-weight:500;color:var(--t4)}
+.gh .gl{flex:1;height:1px;background:var(--line)}
+.tiles{display:flex;flex-wrap:wrap;gap:6px}
+.tile{width:124px;display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 8px 10px;border-radius:12px;position:relative;text-align:center}
+.tile .art{height:68px;display:flex;align-items:center;justify-content:center}
+.tile .nm{font-size:13px;line-height:17px;font-weight:500;color:var(--t1);max-width:108px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tile .mt{font-size:11.5px;line-height:14px;color:var(--t3);margin-top:-6px}
+.tile.sel{background:var(--acc-soft);box-shadow:inset 0 0 0 1px var(--acc-line)}
+.tile.sel .nm{color:var(--t1)}
+.tile.hov{background:var(--hover)}
+.tile.cut{opacity:.45}
+.tile.drop{box-shadow:inset 0 0 0 1.5px var(--accent);background:var(--acc-soft)}
+.chk{position:absolute;top:7px;right:7px;width:18px;height:18px;border-radius:50%;background:var(--accent);color:var(--ink);display:flex;align-items:center;justify-content:center}
+.chk .i{width:11px;height:11px;stroke-width:3.2}
+.thumb{display:block;border-radius:7px;overflow:hidden;box-shadow:0 0 0 1px rgba(255,255,255,.12),0 6px 14px rgba(0,0,0,.35);position:relative;flex:none}
+.thumb svg{display:block;width:100%;height:100%}
+.thumb .play{position:absolute;left:50%;top:50%;width:24px;height:24px;margin:-12px 0 0 -12px;border-radius:50%;background:rgba(0,0,0,.45);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center}
+.thumb .play svg{width:12px;height:12px;margin-left:2px}
+.thumb .dur{position:absolute;right:4px;bottom:4px;font-size:9.5px;font-weight:600;line-height:14px;padding:0 4px;border-radius:4px;background:rgba(0,0,0,.55);color:#fff}
+.tdots{display:flex;gap:3px;align-items:center}
+.tdots .dot{width:7px;height:7px;box-shadow:0 0 0 1.5px var(--panel)}
+.sw{width:34px;height:20px;border-radius:10px;background:rgba(255,255,255,.16);position:relative;flex:none;transition:background .2s}
+.sw::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.4)}
+.sw.on{background:var(--accent)}
+.sw.on::after{left:16px}
+.seg{display:inline-flex;padding:2px;gap:2px;border-radius:9px;background:var(--fill);flex:none}
+.seg>button{height:26px;padding:0 11px;border-radius:7px;font-size:12.5px;color:var(--t2);font-weight:500;display:flex;align-items:center;gap:6px}
+.seg>button.on{background:var(--fill3);color:var(--t1);box-shadow:0 1px 2px rgba(0,0,0,.3)}
+.seg>button.icon{width:30px;padding:0;justify-content:center}
+.cb{width:18px;height:18px;border-radius:5px;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.28);display:flex;align-items:center;justify-content:center;flex:none}
+.cb.on{background:var(--accent);box-shadow:none;color:var(--ink)}
+.cb .i{width:12px;height:12px;stroke-width:3}
+.rd{width:18px;height:18px;border-radius:50%;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.28);flex:none;position:relative}
+.rd.on{box-shadow:inset 0 0 0 5px var(--accent)}
+.field{display:flex;align-items:center;gap:8px;height:34px;padding:0 10px;border-radius:9px;background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px var(--line2);font-size:13.5px;color:var(--t1)}
+.field.focus{box-shadow:inset 0 0 0 1px var(--accent),0 0 0 3px color-mix(in oklab,var(--accent) 25%,transparent)}
+.field.err{box-shadow:inset 0 0 0 1px var(--danger),0 0 0 3px color-mix(in oklab,var(--danger) 22%,transparent)}
+.field .ph{color:var(--t4)}
+.select{display:flex;align-items:center;gap:8px;height:30px;padding:0 8px 0 11px;border-radius:8px;background:var(--fill2);font-size:13px;font-weight:500;color:var(--t1)}
+.select .i{color:var(--t3);width:14px;height:14px;margin-left:2px}
+.card{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12.5px}
+.tab{display:flex;align-items:center;gap:8px;height:30px;padding:0 8px 0 10px;border-radius:8px;font-size:13px;color:var(--t2);white-space:nowrap}
+.tab .i{width:15px;height:15px;color:var(--t3)}
+.tab.on{background:var(--fill2);color:var(--t1);font-weight:500}
+.tab .x{width:18px;height:18px;border-radius:5px;display:flex;align-items:center;justify-content:center;color:var(--t3)}
+.tab .x .i{width:12px;height:12px}
+.toast{display:flex;align-items:center;gap:12px;padding:12px 12px 12px 14px;border-radius:12px;background:var(--pop);backdrop-filter:var(--pop-fx);border:1px solid var(--line2);box-shadow:0 16px 40px rgba(0,0,0,.45)}
+
+.light{--ink:#FFFFFF;--t1:#17191F;--t2:rgba(23,25,31,.70);--t3:rgba(23,25,31,.56);--t4:rgba(23,25,31,.38);--line:rgba(0,0,0,.07);--line2:rgba(0,0,0,.10);--hover:rgba(0,0,0,.04);--fill:rgba(0,0,0,.05);--fill2:rgba(0,0,0,.075);--fill3:#FFFFFF;--danger:#D63A4F;--warn:#C98A12;--ok:#2E9A5B;--acc-soft:color-mix(in oklab,var(--accent) 13%,transparent);--acc-line:color-mix(in oklab,var(--accent) 55%,transparent);color:var(--t1)}
+.light.glass{--base:rgba(244,245,249,.62);--base-fx:blur(44px) saturate(1.8);--panel:rgba(255,255,255,.84);--panel-fx:blur(44px) saturate(1.4);--pop:rgba(255,255,255,.86);--pop-fx:blur(28px) saturate(1.8)}
+.light.solid{--base:#ECEDF1;--panel:#FFFFFF;--pop:#FFFFFF}
+.light .win{border-color:rgba(0,0,0,.08);box-shadow:0 40px 100px rgba(60,40,90,.22),0 8px 24px rgba(60,40,90,.12)}
+.light .menu,.light .toast{box-shadow:0 18px 50px rgba(40,30,70,.18),0 2px 8px rgba(40,30,70,.10),0 0 0 .5px rgba(0,0,0,.06)}
+.light .ib.on,.light .seg>button.on{box-shadow:0 1px 2px rgba(0,0,0,.12),0 0 0 .5px rgba(0,0,0,.06)}
+.light .tab.on{background:#FFFFFF;box-shadow:0 1px 2px rgba(0,0,0,.10),0 0 0 .5px rgba(0,0,0,.06)}
+.light .row.on{background:rgba(0,0,0,.065)}
+.light .kbd{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.10);color:var(--t3)}
+.light .mi.hl .i,.light .mi.hl .sc,.light .mi.hl .slot .i{color:rgba(255,255,255,.85)}
+.light .mi.hl .kbd{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.28);color:#fff}
+.light .bar{background:rgba(0,0,0,.08)}
+.light .ico{filter:drop-shadow(0 2px 4px rgba(30,40,80,.14))}
+.light .thumb{box-shadow:0 0 0 1px rgba(0,0,0,.08),0 4px 12px rgba(30,40,80,.18)}
+.light .tdots .dot{box-shadow:0 0 0 1.5px #fff}
+.wallimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.doc{background:#0E0F13;padding:72px 72px 80px}
+.h1{font-size:44px;line-height:50px;font-weight:700;letter-spacing:-.03em}
+.lead{font-size:17px;line-height:26px;color:var(--t2);max-width:760px;margin-top:12px}
+.h2{font-size:22px;line-height:28px;font-weight:600;letter-spacing:-.015em;margin:64px 0 6px}
+.h2s{font-size:14px;color:var(--t3);margin-bottom:20px}
+.h3{font-size:13px;font-weight:600;color:var(--t2);margin-bottom:12px}
+.swl{display:flex;flex-direction:column;gap:6px;width:112px}
+.sws{height:64px;border-radius:12px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.swn{font-size:13px;font-weight:500}
+.swv{font-size:11.5px;color:var(--t3);font-family:'JetBrains Mono',monospace}
+.box{background:#14151A;border:1px solid var(--line);border-radius:16px;padding:24px}
+.lbl{font-size:11.5px;color:var(--t3);font-family:'JetBrains Mono',monospace}
+.cmp{display:flex;flex-direction:column;gap:14px}
+.cmp>.seg,.cmp>.grp{align-self:flex-start}
+.doc{--panel:#17181C;--pop:#212328;--pop-fx:none}.doc{min-height:100%}</style>
+
+<div class="root glass" style="width: 1440px; height: 2420px; --accent: #7C9CFF">
+<div class="doc">
+<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 18px"><span style="font-size: 13px; font-weight: 600; color: var(--accent)">Rove</span><span class="cap">Design system · Components</span></div>
+<div class="h1">Components</div>
+<div class="lead">Every control Rove needs, in its states. Each one reads only the tokens, so Glass and Solid and every theme accent come for free.</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin-top: 40px"><div class="box cmp" style="grid-column: span 1"><div style="font-size: 15px; font-weight: 600">Buttons</div><div class="cap" style="font-size: 13px; line-height: 19px; margin-top: -4px">Primary takes the accent with dark ink. Focus is a 2 px accent ring, offset 2.</div><div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap"><button class="btn pri">Open</button><button class="btn"><svg class="i i16" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17l6-6-6-6 M12 19h8"></path></svg>Open in Terminal</button><button class="btn ghost">Cancel</button><button class="btn danger"><svg class="i i16" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18 M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2 M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6 M10 11v6 M14 11v6"></path></svg>Empty Trash</button></div>
+<div style="display: flex; gap: 10px; align-items: center"><button class="btn pri sm">Small</button><button class="btn pri">Medium</button><button class="btn pri lg">Large</button><span style="width: 12px"></span><button class="btn pri" style="filter: brightness(1.1)">Hover</button><button class="btn pri" style="transform: scale(.97); filter: brightness(.92)">Pressed</button><button class="btn pri" style="box-shadow: 0 0 0 2px #14151A, 0 0 0 4px var(--accent)">Focus</button><button class="btn pri" style="opacity: .4">Disabled</button></div>
+<div style="display: flex; gap: 6px; align-items: center"><button class="ib" aria-label="Back"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button><button class="ib" style="background: var(--hover)" aria-label="Hover"><svg class="i i16" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z M21 21l-4.35-4.35"></path></svg></button><button class="ib on" aria-label="Selected"><svg class="i i16" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z M15 4h4a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z M5 14h4a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1z M15 14h4a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1z"></path></svg></button><button class="ib dim" aria-label="Disabled"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6"></path></svg></button><span class="cap" style="margin-left: 8px">Icon button · rest, hover, selected, disabled</span></div></div><div class="box cmp" style="grid-column: span 1"><div style="font-size: 15px; font-weight: 600">Toggles and choices</div><div class="cap" style="font-size: 13px; line-height: 19px; margin-top: -4px">Switches for on and off, segmented controls for one of a few.</div><div style="display: flex; gap: 28px; align-items: center"><div style="display: flex; gap: 10px; align-items: center"><button class="sw on" aria-pressed="true"></button><button class="sw" aria-pressed="false"></button><span class="sw" style="opacity: .4"></span></div><div style="display: flex; gap: 10px; align-items: center"><span class="cb on"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></span><span class="cb"></span><span class="cb on"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path></svg></span></div><div style="display: flex; gap: 10px; align-items: center"><span class="rd on"></span><span class="rd"></span></div></div>
+<div class="seg"><button class="">Tight</button><button class="on">Compact</button><button class="">Normal</button><button class="">Comfortable</button></div>
+<div style="display: flex; gap: 12px; align-items: center"><div class="seg"><button class="icon" aria-label="List"><svg class="i i16" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13 M8 12h13 M8 18h13 M3.5 6h.01 M3.5 12h.01 M3.5 18h.01"></path></svg></button><button class="icon" aria-label="Columns"><svg class="i i16" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z M9 3v18 M15 3v18"></path></svg></button><button class="icon on" aria-label="Grid"><svg class="i i16" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z M15 4h4a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z M5 14h4a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1z M15 14h4a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1z"></path></svg></button><button class="icon" aria-label="Two panes"><svg class="i i16" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z M12 3v18"></path></svg></button></div><div class="seg" style="align-items: center"><button class="icon" aria-label="Fewer"><svg class="i i14" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path></svg></button><span class="num" style="width: 26px; text-align: center; font-size: 13px; font-weight: 600">3</span><button class="icon" aria-label="More"><svg class="i i14" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14 M5 12h14"></path></svg></button></div></div></div><div class="box cmp" style="grid-column: span 1"><div style="font-size: 15px; font-weight: 600">Search, fields and selects</div><div class="search" style="width: 100%"><svg class="i i16" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z M21 21l-4.35-4.35"></path></svg><span style="flex: 1">Search Documents</span><span class="keys"><span class="kbd">Ctrl</span><span class="kbd">F</span></span></div>
+<div class="field focus"><svg class="i i16" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z M21 21l-4.35-4.35"></path></svg><span style="flex: 1">tag:blue invoice<span style="display: inline-block; width: 1.5px; height: 16px; background: var(--accent); vertical-align: -3px; margin-left: 1px"></span></span><span class="kbd">Esc</span></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><div class="field err"><span style="flex: 1">report/q3.odt</span></div><span class="cap" style="color: var(--danger)">Names can’t contain “/”.</span></div>
+<div style="display: flex; gap: 10px; align-items: center"><button class="select">Name<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><button class="select" style="background: var(--fill)">Last folder<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><span class="cap">Select · closed</span></div></div><div class="box cmp" style="grid-column: span 1"><div style="font-size: 15px; font-weight: 600">Menus, tooltips, keycaps</div><div class="cap" style="font-size: 13px; line-height: 19px; margin-top: -4px">One menu shape for context menus, dropdowns and selects. The highlight is the accent.</div><div style="position: relative; height: 330px">
+<div class="menu" style="left: 0; top: 0; width: 250px">
+<div class="mlab">Section label</div>
+<button class="mi"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h6v6 M10 14 21 3 M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg>Item<span class="sc"><span class="kbd">Enter</span></span></button>
+<button class="mi hl"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 9h11a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H10a1 1 0 0 1-1-1z M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"></path></svg>Highlighted<span class="keys"><span class="kbd">Ctrl</span><span class="kbd">C</span></span></button>
+<button class="mi"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M6 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M18 22a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M8.59 13.51l6.83 3.98 M15.41 6.51l-6.82 3.98"></path></svg>Submenu<span class="sc"><svg class="i i14" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6"></path></svg></span></button>
+<button class="mi dis"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5 M4 9h10.5a5.5 5.5 0 0 1 0 11H11"></path></svg>Disabled</button>
+<div class="msep"></div>
+<button class="mi"><span class="slot"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></span>Checked option</button>
+<button class="mi"><span class="slot"></span>Unchecked option</button>
+<div class="msep"></div>
+<button class="mi red"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18 M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2 M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6 M10 11v6 M14 11v6"></path></svg>Destructive<span class="sc"><span class="kbd">Del</span></span></button>
+</div>
+<div style="position: absolute; left: 280px; top: 30px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: inline-flex; align-items: center; gap: 8px; height: 28px; padding: 0 8px 0 10px; border-radius: 8px; background: var(--pop); border: 1px solid var(--line2); box-shadow: 0 8px 24px rgba(0,0,0,.4); font-size: 12.5px; width: max-content">Grid view<span class="keys"><span class="kbd">Ctrl</span><span class="kbd">3</span></span></div>
+<span class="cap">Tooltip · after 500 ms</span>
+<div style="display: flex; gap: 4px; margin-top: 10px"><span class="kbd">Ctrl</span><span class="kbd">Shift</span><span class="kbd">C</span><span class="kbd">Space</span><span class="kbd">F2</span></div>
+<span class="cap">Keycaps · shortcuts are always shown</span>
+</div>
+</div></div><div class="box cmp" style="grid-column: span 1"><div style="font-size: 15px; font-weight: 600">Sidebar rows and devices</div><div class="cap" style="font-size: 13px; line-height: 19px; margin-top: -4px">Capacity turns amber past 85%. Drop targets show an accent ring.</div><div style="display: flex; gap: 20px"><div style="width: 230px; display: flex; flex-direction: column; gap: 2px">
+<div class="row"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5 M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"></path></svg>Rest</div><div class="row hov"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12 M7 10l5 5 5-5 M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"></path></svg>Hover</div><div class="row on"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z M14 3v5h5 M9 13h6 M9 17h6"></path></svg>Selected</div>
+<div class="row"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.5 19H7a5 5 0 1 1 1.2-9.85A6 6 0 0 1 19.5 11 4 4 0 0 1 17.5 19z"></path></svg>gdrive<span class="end"><span class="dot" style="background: var(--ok)"></span></span></div>
+<div class="row"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3h16a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z M4 14h16a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1z M7 6.5h.01 M7 17.5h.01"></path></svg>nas<span class="end">offline</span></div>
+<div class="row" style="background: var(--acc-soft); box-shadow: inset 0 0 0 1.5px var(--accent); color: var(--t1)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18 M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2 M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6 M10 11v6 M14 11v6"></path></svg>Drop to trash</div>
+</div><div style="width: 230px; display: flex; flex-direction: column; gap: 4px">
+<div class="dev"><div class="top"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12H2 M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z M6 16h.01 M10 16h.01"></path></svg><span style="flex: 1">som2omarchy</span></div><div class="bar"><div style="width: 63%"></div></div><div class="cap">191.2 GB free of 512 GB</div></div>
+<div class="dev"><div class="top"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 2h4v5h-4z M7 7h10v10a5 5 0 0 1-10 0z"></path></svg><span style="flex: 1">SanDisk Ultra</span><button class="ib" style="width: 22px; height: 22px" aria-label="Eject"><svg class="i i14" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5l7 8H5z M5 18h14"></path></svg></button></div><div class="bar"><div style="width: 89%; background: var(--warn)"></div></div><div class="cap">7.1 GB free of 64 GB</div></div>
+<div class="dev"><div class="top"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 11h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1z M8 11V7a4 4 0 0 1 8 0v4"></path></svg><span style="flex: 1">Backup disk</span><button class="btn sm">Unlock</button></div><div class="cap">Encrypted · 2 TB</div></div>
+</div></div></div><div class="box cmp" style="grid-column: span 1"><div style="font-size: 15px; font-weight: 600">Navigation</div><div class="cap" style="font-size: 13px; line-height: 19px; margin-top: -4px">Tabs, breadcrumb with place icons, and back/forward/up.</div><div style="display: flex; align-items: center; gap: 4px"><button class="tab on"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z M14 3v5h5 M9 13h6 M9 17h6"></path></svg>Documents<span class="x"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18 M6 6l12 12"></path></svg></span></button><button class="tab"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12 M7 10l5 5 5-5 M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"></path></svg>Downloads</button><button class="tab"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 18l6-6-6-6 M8 6l-6 6 6 6"></path></svg>rove</button><button class="ib" style="width: 26px; height: 26px" aria-label="New tab"><svg class="i i14" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14 M5 12h14"></path></svg></button></div>
+<div class="crumbs"><button class="crumb"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12H2 M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z M6 16h.01 M10 16h.01"></path></svg>som2omarchy</button><svg class="i csep" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6"></path></svg><button class="crumb"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5 M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"></path></svg>Home</button><svg class="i csep" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6"></path></svg><button class="crumb"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 18l6-6-6-6 M8 6l-6 6 6 6"></path></svg>Projects</button><svg class="i csep" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6"></path></svg><button class="crumb cur"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z M14 3v5h5 M9 13h6 M9 17h6"></path></svg>flea</button></div>
+<div class="grp" style="width: max-content"><button class="ib" aria-label="Back"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button><button class="ib dim" aria-label="Forward"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6"></path></svg></button><button class="ib" aria-label="Up"><svg class="i i16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5 M5 12l7-7 7 7"></path></svg></button></div></div><div class="box cmp" style="grid-column: span 2"><div style="font-size: 15px; font-weight: 600">Grid tiles</div><div class="cap" style="font-size: 13px; line-height: 19px; margin-top: -4px">States: rest, hover, selected, drop target, cut (to be moved), renaming in place.</div><div style="display: flex; gap: 8px; flex-wrap: wrap"><div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><button class="tile "><span class="art"><img class="ico" src="assets/whitesur-folder.png" alt="" style="width: 64px; height: 64px"></span><span class="nm">Invoices</span><span class="mt">48 items</span></button><span class="lbl">rest</span></div><div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><button class="tile hov"><span class="art"><img class="ico" src="assets/whitesur-folder.png" alt="" style="width: 64px; height: 64px"></span><span class="nm">Invoices</span><span class="mt">48 items</span></button><span class="lbl">hov</span></div><div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><button class="tile sel"><span class="chk"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></span><span class="art"><img class="ico" src="assets/whitesur-folder.png" alt="" style="width: 64px; height: 64px"></span><span class="nm">Invoices</span><span class="mt">48 items</span></button><span class="lbl">sel</span></div><div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><button class="tile drop"><span class="art"><img class="ico" src="assets/whitesur-folder.png" alt="" style="width: 64px; height: 64px"></span><span class="nm">Invoices</span><span class="mt">48 items</span></button><span class="lbl">drop</span></div><div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><button class="tile cut"><span class="art"><img class="ico" src="assets/whitesur-x-office-document.png" alt="" style="width: 64px; height: 64px"></span><span class="nm">report-q3.odt</span><span class="mt">2.4 MB</span></button><span class="lbl">cut</span></div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><div class="tile sel"><span class="art"><span class="thumb" style="width: 92px; height: 62px"><svg viewBox="0 0 96 64" width="96" height="64" aria-hidden="true"><defs><linearGradient id="gS" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2B2A63"></stop><stop offset=".62" stop-color="#D9716A"></stop><stop offset="1" stop-color="#F7B57A"></stop></linearGradient></defs><rect width="96" height="64" fill="url(#gS)"></rect><circle cx="64" cy="38" r="8" fill="#FFE1B0"></circle><rect y="41" width="96" height="23" fill="#232D57"></rect><path d="M0 45h96 M12 50h30 M52 54h34 M20 59h40" stroke="#F7B57A" stroke-opacity=".45" stroke-width="1.2"></path></svg></span></span><span class="field focus" style="height: 24px; width: 122px; margin: 0 -7px; padding: 0 6px; gap: 0; justify-content: center; white-space: nowrap; overflow: hidden; font-size: 12.5px; font-weight: 500; border-radius: 6px; background: var(--panel)"><span style="background: color-mix(in oklab,var(--accent) 45%,transparent); border-radius: 3px; padding: 0 1px">shore-at-dusk</span><span>.jpg</span></span><span class="mt" style="margin-top: -3px">Enter to save</span></div><span class="lbl">rename</span></div></div></div><div class="box cmp" style="grid-column: span 1"><div style="font-size: 15px; font-weight: 600">List rows</div><div style="display: flex; flex-direction: column; gap: 1px"><div style="display: grid; grid-template-columns: minmax(0,1fr) 90px 70px 110px; column-gap: 14px; align-items: center; height: 32px; padding: 0 12px; border-radius: 8px; font-size: 13.5px; "><span style="display: flex; align-items: center; gap: 10px"><img class="ico" src="assets/whitesur-folder.png" alt="" style="width: 20px; height: 20px">acpi-dump</span><span style="color: var(--t3)">Folder</span><span class="num" style="text-align: right; color: var(--t2)">4.8 MB</span><span class="num" style="color: var(--t3)">Nov 9, 18:04</span></div><div style="display: grid; grid-template-columns: minmax(0,1fr) 90px 70px 110px; column-gap: 14px; align-items: center; height: 32px; padding: 0 12px; border-radius: 8px; font-size: 13.5px; background: var(--hover)"><span style="display: flex; align-items: center; gap: 10px"><img class="ico" src="assets/whitesur-folder.png" alt="" style="width: 20px; height: 20px">Applications</span><span style="color: var(--t3)">Folder</span><span class="num" style="text-align: right; color: var(--t2)">298.2 MB</span><span class="num" style="color: var(--t3)">Oct 31, 09:15</span></div><div style="display: grid; grid-template-columns: minmax(0,1fr) 90px 70px 110px; column-gap: 14px; align-items: center; height: 32px; padding: 0 12px; border-radius: 8px; font-size: 13.5px; background: var(--acc-soft); box-shadow: inset 0 0 0 1px var(--acc-line)"><span style="display: flex; align-items: center; gap: 10px"><img class="ico" src="assets/whitesur-folder-code.png" alt="" style="width: 20px; height: 20px">devcave</span><span style="color: var(--t3)">Folder</span><span class="num" style="text-align: right; color: var(--t2)">46.1 GB</span><span class="num" style="color: var(--t3)">Nov 11, 14:13</span></div><div style="display: grid; grid-template-columns: minmax(0,1fr) 90px 70px 110px; column-gap: 14px; align-items: center; height: 32px; padding: 0 12px; border-radius: 8px; font-size: 13.5px; background: var(--acc-soft)"><span style="display: flex; align-items: center; gap: 10px"><img class="ico" src="assets/whitesur-folder-documents.png" alt="" style="width: 20px; height: 20px">Documents</span><span style="color: var(--t3)">Folder</span><span class="num" style="text-align: right; color: var(--t2)">7.9 GB</span><span class="num" style="color: var(--t3)">Oct 31, 15:05</span></div><div style="display: grid; grid-template-columns: minmax(0,1fr) 90px 70px 110px; column-gap: 14px; align-items: center; height: 32px; padding: 0 12px; border-radius: 8px; font-size: 13.5px; opacity: .45"><span style="display: flex; align-items: center; gap: 10px"><img class="ico" src="assets/whitesur-folder-download.png" alt="" style="width: 20px; height: 20px">Downloads</span><span style="color: var(--t3)">Folder</span><span class="num" style="text-align: right; color: var(--t2)">—</span><span class="num" style="color: var(--t3)">Nov 11, 20:50</span></div></div><span class="cap">Rest · hover · selected with cursor · selected · cut</span></div><div class="box cmp" style="grid-column: span 1"><div style="font-size: 15px; font-weight: 600">Progress and notices</div><div class="cap" style="font-size: 13px; line-height: 19px; margin-top: -4px">Bottom-right stack. Progress for long jobs; Undo on every reversible action.</div><div class="toast" style="width: 420px"><span style="width: 36px; height: 36px; border-radius: 10px; background: var(--acc-soft); color: var(--accent); display: flex; align-items: center; justify-content: center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 9h11a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H10a1 1 0 0 1-1-1z M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"></path></svg></span><div style="flex: 1; display: flex; flex-direction: column; gap: 7px"><div style="display: flex; justify-content: space-between; font-size: 13.5px"><span style="font-weight: 500">Copying 3 items to SanDisk Ultra</span><span class="cap num">42%</span></div><div class="bar"><div style="width: 42%"></div></div><span class="cap">1.1 GB of 2.6 GB · about 12 seconds left</span></div><button class="ib" aria-label="Cancel copy"><svg class="i i16" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18 M6 6l12 12"></path></svg></button></div>
+<div class="toast" style="width: 420px"><span style="width: 36px; height: 36px; border-radius: 10px; background: color-mix(in oklab,var(--ok) 18%,transparent); color: var(--ok); display: flex; align-items: center; justify-content: center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18 M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2 M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6 M10 11v6 M14 11v6"></path></svg></span><span style="flex: 1; font-size: 13.5px">Moved 4 items to Trash</span><button class="btn sm">Undo<span class="kbd" style="height: 16px; min-width: 16px; font-size: 9.5px">Z</span></button></div>
+<div class="toast" style="width: 420px"><span style="width: 36px; height: 36px; border-radius: 10px; background: color-mix(in oklab,var(--danger) 18%,transparent); color: var(--danger); display: flex; align-items: center; justify-content: center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z M12 16v-4 M12 8h.01"></path></svg></span><div style="flex: 1"><div style="font-size: 13.5px; font-weight: 500">Couldn’t reach nas</div><div class="cap">SMB timed out after 10 seconds.</div></div><button class="btn sm">Retry</button></div></div><div class="box cmp" style="grid-column: span 1"><div style="font-size: 15px; font-weight: 600">Confirmation</div><div class="cap" style="font-size: 13px; line-height: 19px; margin-top: -4px">Only for what can’t be undone. The verb on the button, never “OK”.</div><div style="width: 400px; border-radius: 16px; background: var(--pop); border: 1px solid var(--line2); box-shadow: 0 30px 80px rgba(0,0,0,.55); padding: 22px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; gap: 14px"><span style="width: 40px; height: 40px; border-radius: 12px; background: color-mix(in oklab,var(--danger) 18%,transparent); color: var(--danger); display: flex; align-items: center; justify-content: center; flex: none"><svg class="i i20" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18 M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2 M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6 M10 11v6 M14 11v6"></path></svg></span><div><div style="font-size: 16px; font-weight: 600; letter-spacing: -0.01em">Empty the Trash?</div><div style="font-size: 13.5px; line-height: 20px; color: var(--t2); margin-top: 4px">213 items, 4.2 GB, will be deleted for good. This can’t be undone.</div></div></div>
+<div style="display: flex; justify-content: flex-end; gap: 8px"><button class="btn ghost">Cancel<span class="kbd">Esc</span></button><button class="btn" style="background: var(--danger); color: var(--ink); font-weight: 600">Empty Trash</button></div></div></div><div class="box cmp" style="grid-column: span 1"><div style="font-size: 15px; font-weight: 600">Empty folder</div><div style="height: 230px; border-radius: 12px; background: var(--panel); border: 1px solid var(--line); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center">
+<span style="opacity: .55"><img class="ico" src="assets/whitesur-folder.png" alt="" style="width: 72px; height: 72px"></span><div style="font-size: 15px; font-weight: 600">This folder is empty</div><div class="cap" style="font-size: 13px">Drop files here, or press <span class="kbd">Ctrl</span> <span class="kbd">Shift</span> <span class="kbd">N</span> for a new folder.</div></div></div></div>
+</div>
+</div>
+
+
+</body>
+</html>

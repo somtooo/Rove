@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Rove · Grid view anatomy</title>
+
+</head>
+<body>
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0B0C10}
+.root{--accent:#7C9CFF;--ink:#0B0D14;--t1:#EDEFF5;--t2:rgba(237,239,245,.68);--t3:rgba(237,239,245,.52);--t4:rgba(237,239,245,.34);--line:rgba(255,255,255,.07);--line2:rgba(255,255,255,.11);--hover:rgba(255,255,255,.05);--fill:rgba(255,255,255,.06);--fill2:rgba(255,255,255,.10);--fill3:rgba(255,255,255,.15);--danger:#FF7A7A;--warn:#F2C55C;--ok:#62D6A0;--acc-soft:color-mix(in oklab,var(--accent) 20%,transparent);--acc-line:color-mix(in oklab,var(--accent) 60%,transparent);--acc-text:color-mix(in oklab,var(--accent) 75%,white);position:relative;overflow:hidden;font-family:Inter,system-ui,sans-serif;color:var(--t1);font-size:14px;line-height:20px;-webkit-font-smoothing:antialiased;font-feature-settings:'cv11','ss03'}
+.glass{--base:rgba(18,20,30,.52);--base-fx:blur(44px) saturate(1.7);--panel:rgba(13,15,22,.80);--panel-fx:blur(44px) saturate(1.3);--pop:rgba(32,35,48,.84);--pop-fx:blur(28px) saturate(1.7)}
+.solid{--base:#0F1013;--base-fx:none;--panel:#17181C;--panel-fx:none;--pop:#212328;--pop-fx:none}
+:where(.root) *{box-sizing:border-box}
+:where(.root) button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:left}
+:where(.root) input{font:inherit;color:inherit;background:none;border:0;outline:0}
+.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;flex:none;display:block}
+.i14{width:14px;height:14px}.i16{width:16px;height:16px}.i20{width:20px;height:20px}.i24{width:24px;height:24px}
+.ico{display:block;flex:none;filter:drop-shadow(0 3px 6px rgba(0,0,0,.28))}
+.wall{position:absolute;inset:0;width:100%;height:100%}
+.win{position:absolute;border-radius:16px;overflow:hidden;display:flex;background:var(--base);backdrop-filter:var(--base-fx);border:1px solid rgba(255,255,255,.10);box-shadow:0 40px 120px rgba(0,0,0,.55),0 8px 24px rgba(0,0,0,.35)}
+.side{width:244px;flex:none;display:flex;flex-direction:column;padding:12px 10px 12px 12px}
+.panel{flex:1;min-width:0;margin:8px 8px 8px 0;border-radius:12px;display:flex;flex-direction:column;background:var(--panel);backdrop-filter:var(--panel-fx);border:1px solid var(--line);overflow:hidden;position:relative}
+.sec{font-size:12px;line-height:16px;font-weight:500;color:var(--t3);padding:14px 10px 6px;display:flex;align-items:center;justify-content:space-between}
+.row{display:flex;align-items:center;gap:10px;height:32px;padding:0 10px;border-radius:8px;color:var(--t2);font-size:14px;width:100%}
+.row .i{color:var(--t3)}
+.row.on{background:var(--fill2);color:var(--t1);font-weight:500}
+.row.on .i{color:var(--accent)}
+.row.hov{background:var(--hover);color:var(--t1)}
+.row .end{margin-left:auto;display:flex;align-items:center;gap:6px;color:var(--t3);font-size:12px}
+.dot{width:8px;height:8px;border-radius:50%;flex:none}
+.tdot{width:14px;height:14px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.2)}
+.bar{height:4px;border-radius:2px;background:rgba(255,255,255,.09);overflow:hidden}
+.bar>div{height:100%;border-radius:2px;background:var(--accent)}
+.cap{font-size:12px;line-height:16px;color:var(--t3);font-variant-numeric:tabular-nums}
+.dev{display:flex;flex-direction:column;gap:6px;padding:7px 10px 9px;border-radius:8px}
+.dev .top{display:flex;align-items:center;gap:10px;color:var(--t2);font-size:14px}
+.dev .top .i{color:var(--t3)}
+.tb{height:56px;flex:none;display:flex;align-items:center;gap:10px;padding:0 12px 0 14px}
+.grp{display:flex;align-items:center;gap:2px;padding:2px;border-radius:10px;background:var(--fill)}
+.ib{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--t2);flex:none}
+.ib.on{background:var(--fill3);color:var(--t1);box-shadow:0 1px 2px rgba(0,0,0,.3)}
+.ib.dim{color:var(--t4)}
+.title{font-size:20px;line-height:26px;font-weight:600;letter-spacing:-.015em}
+.search{display:flex;align-items:center;gap:8px;height:32px;width:232px;padding:0 6px 0 10px;border-radius:10px;background:var(--fill);color:var(--t3);font-size:13px}
+.kbd{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 5px;border-radius:5px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.09);border-bottom-width:2px;font-size:10.5px;font-weight:600;letter-spacing:.03em;color:var(--t3);line-height:1;flex:none}
+.keys{display:inline-flex;gap:3px;margin-left:auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:32px;padding:0 12px;border-radius:9px;font-size:13px;font-weight:500;background:var(--fill2);color:var(--t1);flex:none;white-space:nowrap}
+.btn.pri{background:var(--accent);color:var(--ink);font-weight:600}
+.btn.ghost{background:none;color:var(--t2)}
+.btn.danger{background:color-mix(in oklab,var(--danger) 18%,transparent);color:var(--danger)}
+.btn.sm{height:26px;padding:0 9px;font-size:12px;border-radius:7px}
+.btn.lg{height:40px;padding:0 16px;font-size:14px;border-radius:11px}
+.menu{position:absolute;width:260px;padding:5px;border-radius:12px;background:var(--pop);backdrop-filter:var(--pop-fx);border:1px solid var(--line2);box-shadow:0 18px 50px rgba(0,0,0,.5),0 2px 8px rgba(0,0,0,.3);display:flex;flex-direction:column;z-index:20}
+.mi{display:flex;align-items:center;gap:10px;height:30px;padding:0 8px 0 10px;border-radius:7px;font-size:13.5px;color:var(--t1);width:100%}
+.mi .i{color:var(--t2);width:16px;height:16px}
+.mi .sc{margin-left:auto;font-size:12px;color:var(--t3)}
+.mi .slot{width:16px;flex:none;display:flex}
+.mi .slot .i{color:var(--accent);stroke-width:2.4}
+.mi.hl{background:var(--accent);color:var(--ink)}
+.mi.hl .i,.mi.hl .sc,.mi.hl .slot .i{color:rgba(11,13,20,.72)}
+.mi.hl .kbd{background:rgba(11,13,20,.12);border-color:rgba(11,13,20,.14);color:rgba(11,13,20,.7)}
+.mi.red{color:var(--danger)}.mi.red .i{color:var(--danger)}
+.mi.dis{color:var(--t4)}.mi.dis .i{color:var(--t4)}
+.msep{height:1px;background:var(--line2);margin:5px 8px}
+.mlab{font-size:11.5px;font-weight:500;color:var(--t3);padding:6px 10px 3px}
+.foot{height:38px;flex:none;display:flex;align-items:center;gap:10px;padding:0 10px 0 8px;border-top:1px solid var(--line);font-size:12.5px;color:var(--t2)}
+.crumbs{display:flex;align-items:center;gap:2px;min-width:0}
+.crumb{display:flex;align-items:center;gap:6px;height:26px;padding:0 7px;border-radius:7px;color:var(--t2);white-space:nowrap}
+.crumb .i{width:15px;height:15px;color:var(--t3)}
+.crumb.cur{color:var(--t1);font-weight:500;background:var(--fill)}
+.crumb.cur .i{color:var(--accent)}
+.csep{color:var(--t4);width:14px;height:14px}
+.num{font-variant-numeric:tabular-nums}
+.gh{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--t2);height:28px;letter-spacing:-.005em}
+.gh .gc{font-weight:500;color:var(--t4)}
+.gh .gl{flex:1;height:1px;background:var(--line)}
+.tiles{display:flex;flex-wrap:wrap;gap:6px}
+.tile{width:124px;display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 8px 10px;border-radius:12px;position:relative;text-align:center}
+.tile .art{height:68px;display:flex;align-items:center;justify-content:center}
+.tile .nm{font-size:13px;line-height:17px;font-weight:500;color:var(--t1);max-width:108px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tile .mt{font-size:11.5px;line-height:14px;color:var(--t3);margin-top:-6px}
+.tile.sel{background:var(--acc-soft);box-shadow:inset 0 0 0 1px var(--acc-line)}
+.tile.sel .nm{color:var(--t1)}
+.tile.hov{background:var(--hover)}
+.tile.cut{opacity:.45}
+.tile.drop{box-shadow:inset 0 0 0 1.5px var(--accent);background:var(--acc-soft)}
+.chk{position:absolute;top:7px;right:7px;width:18px;height:18px;border-radius:50%;background:var(--accent);color:var(--ink);display:flex;align-items:center;justify-content:center}
+.chk .i{width:11px;height:11px;stroke-width:3.2}
+.thumb{display:block;border-radius:7px;overflow:hidden;box-shadow:0 0 0 1px rgba(255,255,255,.12),0 6px 14px rgba(0,0,0,.35);position:relative;flex:none}
+.thumb svg{display:block;width:100%;height:100%}
+.thumb .play{position:absolute;left:50%;top:50%;width:24px;height:24px;margin:-12px 0 0 -12px;border-radius:50%;background:rgba(0,0,0,.45);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center}
+.thumb .play svg{width:12px;height:12px;margin-left:2px}
+.thumb .dur{position:absolute;right:4px;bottom:4px;font-size:9.5px;font-weight:600;line-height:14px;padding:0 4px;border-radius:4px;background:rgba(0,0,0,.55);color:#fff}
+.tdots{display:flex;gap:3px;align-items:center}
+.tdots .dot{width:7px;height:7px;box-shadow:0 0 0 1.5px var(--panel)}
+.sw{width:34px;height:20px;border-radius:10px;background:rgba(255,255,255,.16);position:relative;flex:none;transition:background .2s}
+.sw::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.4)}
+.sw.on{background:var(--accent)}
+.sw.on::after{left:16px}
+.seg{display:inline-flex;padding:2px;gap:2px;border-radius:9px;background:var(--fill);flex:none}
+.seg>button{height:26px;padding:0 11px;border-radius:7px;font-size:12.5px;color:var(--t2);font-weight:500;display:flex;align-items:center;gap:6px}
+.seg>button.on{background:var(--fill3);color:var(--t1);box-shadow:0 1px 2px rgba(0,0,0,.3)}
+.seg>button.icon{width:30px;padding:0;justify-content:center}
+.cb{width:18px;height:18px;border-radius:5px;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.28);display:flex;align-items:center;justify-content:center;flex:none}
+.cb.on{background:var(--accent);box-shadow:none;color:var(--ink)}
+.cb .i{width:12px;height:12px;stroke-width:3}
+.rd{width:18px;height:18px;border-radius:50%;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.28);flex:none;position:relative}
+.rd.on{box-shadow:inset 0 0 0 5px var(--accent)}
+.field{display:flex;align-items:center;gap:8px;height:34px;padding:0 10px;border-radius:9px;background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px var(--line2);font-size:13.5px;color:var(--t1)}
+.field.focus{box-shadow:inset 0 0 0 1px var(--accent),0 0 0 3px color-mix(in oklab,var(--accent) 25%,transparent)}
+.field.err{box-shadow:inset 0 0 0 1px var(--danger),0 0 0 3px color-mix(in oklab,var(--danger) 22%,transparent)}
+.field .ph{color:var(--t4)}
+.select{display:flex;align-items:center;gap:8px;height:30px;padding:0 8px 0 11px;border-radius:8px;background:var(--fill2);font-size:13px;font-weight:500;color:var(--t1)}
+.select .i{color:var(--t3);width:14px;height:14px;margin-left:2px}
+.card{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12.5px}
+.tab{display:flex;align-items:center;gap:8px;height:30px;padding:0 8px 0 10px;border-radius:8px;font-size:13px;color:var(--t2);white-space:nowrap}
+.tab .i{width:15px;height:15px;color:var(--t3)}
+.tab.on{background:var(--fill2);color:var(--t1);font-weight:500}
+.tab .x{width:18px;height:18px;border-radius:5px;display:flex;align-items:center;justify-content:center;color:var(--t3)}
+.tab .x .i{width:12px;height:12px}
+.toast{display:flex;align-items:center;gap:12px;padding:12px 12px 12px 14px;border-radius:12px;background:var(--pop);backdrop-filter:var(--pop-fx);border:1px solid var(--line2);box-shadow:0 16px 40px rgba(0,0,0,.45)}
+
+.light{--ink:#FFFFFF;--t1:#17191F;--t2:rgba(23,25,31,.70);--t3:rgba(23,25,31,.56);--t4:rgba(23,25,31,.38);--line:rgba(0,0,0,.07);--line2:rgba(0,0,0,.10);--hover:rgba(0,0,0,.04);--fill:rgba(0,0,0,.05);--fill2:rgba(0,0,0,.075);--fill3:#FFFFFF;--danger:#D63A4F;--warn:#C98A12;--ok:#2E9A5B;--acc-soft:color-mix(in oklab,var(--accent) 13%,transparent);--acc-line:color-mix(in oklab,var(--accent) 55%,transparent);color:var(--t1)}
+.light.glass{--base:rgba(244,245,249,.62);--base-fx:blur(44px) saturate(1.8);--panel:rgba(255,255,255,.84);--panel-fx:blur(44px) saturate(1.4);--pop:rgba(255,255,255,.86);--pop-fx:blur(28px) saturate(1.8)}
+.light.solid{--base:#ECEDF1;--panel:#FFFFFF;--pop:#FFFFFF}
+.light .win{border-color:rgba(0,0,0,.08);box-shadow:0 40px 100px rgba(60,40,90,.22),0 8px 24px rgba(60,40,90,.12)}
+.light .menu,.light .toast{box-shadow:0 18px 50px rgba(40,30,70,.18),0 2px 8px rgba(40,30,70,.10),0 0 0 .5px rgba(0,0,0,.06)}
+.light .ib.on,.light .seg>button.on{box-shadow:0 1px 2px rgba(0,0,0,.12),0 0 0 .5px rgba(0,0,0,.06)}
+.light .tab.on{background:#FFFFFF;box-shadow:0 1px 2px rgba(0,0,0,.10),0 0 0 .5px rgba(0,0,0,.06)}
+.light .row.on{background:rgba(0,0,0,.065)}
+.light .kbd{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.10);color:var(--t3)}
+.light .mi.hl .i,.light .mi.hl .sc,.light .mi.hl .slot .i{color:rgba(255,255,255,.85)}
+.light .mi.hl .kbd{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.28);color:#fff}
+.light .bar{background:rgba(0,0,0,.08)}
+.light .ico{filter:drop-shadow(0 2px 4px rgba(30,40,80,.14))}
+.light .thumb{box-shadow:0 0 0 1px rgba(0,0,0,.08),0 4px 12px rgba(30,40,80,.18)}
+.light .tdots .dot{box-shadow:0 0 0 1.5px #fff}
+.wallimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.doc{background:#0E0F13;padding:72px 72px 80px}
+.h1{font-size:44px;line-height:50px;font-weight:700;letter-spacing:-.03em}
+.lead{font-size:17px;line-height:26px;color:var(--t2);max-width:760px;margin-top:12px}
+.h2{font-size:22px;line-height:28px;font-weight:600;letter-spacing:-.015em;margin:64px 0 6px}
+.h2s{font-size:14px;color:var(--t3);margin-bottom:20px}
+.h3{font-size:13px;font-weight:600;color:var(--t2);margin-bottom:12px}
+.swl{display:flex;flex-direction:column;gap:6px;width:112px}
+.sws{height:64px;border-radius:12px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.swn{font-size:13px;font-weight:500}
+.swv{font-size:11.5px;color:var(--t3);font-family:'JetBrains Mono',monospace}
+.box{background:#14151A;border:1px solid var(--line);border-radius:16px;padding:24px}
+.lbl{font-size:11.5px;color:var(--t3);font-family:'JetBrains Mono',monospace}
+.cmp{display:flex;flex-direction:column;gap:14px}
+.cmp>.seg,.cmp>.grp{align-self:flex-start}.doc{min-height:100%}
+.an{display:flex;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.pin{width:22px;height:22px;border-radius:11px;background:#FF3D7F;color:#fff;font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none;margin-top:1px}
+.an-n{font-size:14px;font-weight:600;line-height:20px}
+.an-w{font-size:13px;line-height:19px;color:var(--t2);margin-top:2px}
+.an-h,.an-b{font-size:12px;line-height:17px;color:var(--t3);margin-top:5px}
+.an-h b,.an-b b{font-weight:600;color:var(--t2);margin-right:4px}
+code{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--acc-text);background:var(--fill);padding:0 4px;border-radius:4px}</style>
+
+<div class="root solid" style="width: 1440px; height: 3680px; --accent: #7C9CFF">
+<div class="doc" style="padding: 56px 64px 64px">
+<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px"><span style="font-size: 13px; font-weight: 600; color: var(--accent)">Rove</span><span class="cap">Screen anatomy · Grid view and context menu</span></div>
+<div class="h1" style="font-size: 36px; line-height: 42px">What everything on the grid screen is for</div>
+<div class="lead" style="margin-bottom: 28px">Every numbered pin is listed below: what it is, how you use it, and where its data comes from in the Rove backend (the old Flea backend, JSON lines).</div>
+<img src="../screens/grid-anatomy@2x.png" alt="Grid view with numbered pins on each element" style="width: 1312px; height: 838px; border-radius: 14px; display: block; box-shadow: 0 0 0 1px var(--line2)">
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px 40px; margin-top: 40px"><section><div class="h3" style="font-size: 15px; color: var(--t1); margin-bottom: 4px">Sidebar</div><div class="an"><span class="pin">1</span><div><div class="an-n">Sidebar toggle</div><div class="an-w">Hides or shows the sidebar. The "Rove" word next to it is just the app name, not a button.</div><div class="an-h"><b>Use</b> Click, or Ctrl+B</div><div class="an-b"><b>Data</b> Client-side layout state only.</div></div></div><div class="an"><span class="pin">2</span><div><div class="an-n">Favourites</div><div class="an-w">Fixed places: Home, Downloads, Documents, Pictures, Music, Videos, Projects, Trash. The user can pin more by dropping a folder here. The highlighted row is the folder shown in the active tab.</div><div class="an-h"><b>Use</b> Click opens the place in the current tab; middle-click opens a new tab. Dropping files on a row copies or moves them there; dropping on Trash trashes them.</div><div class="an-b"><b>Data</b> XDG user dirs (xdg-user-dir) plus pinned paths in the state file. Opening sends <code>list</code>.</div></div></div><div class="an"><span class="pin">3</span><div><div class="an-n">Tags</div><div class="an-w">Seven tag colours, taken from the Omarchy theme (red, orange, yellow, green, cyan, blue, magenta). The "…" button renames tags.</div><div class="an-h"><b>Use</b> Click a dot to show every file with that tag, which is a search for <code>tag:red</code>.</div><div class="an-b"><b>Data</b> <code>search</code> with a tag query. Tags are stored as user xattrs.</div></div></div><div class="an"><span class="pin">4</span><div><div class="an-n">Network</div><div class="an-w">Mounted or saved remotes: rclone (gdrive), SMB, SFTP, FTPS, WebDAV, NFS, Dropbox, Taildrop. A green dot means connected; the grey label says "offline". "+" opens Connect to Server.</div><div class="an-h"><b>Use</b> Click mounts the remote if needed, then opens it.</div><div class="an-b"><b>Data</b> Mount workers in the backend; <code>fsinfo</code> class <code>network</code>.</div></div></div><div class="an"><span class="pin">5</span><div><div class="an-n">Devices</div><div class="an-w">Every drive, with a capacity bar (accent colour, amber above 85% full) and a free-space caption. Removable drives get an eject button; encrypted ones get Unlock.</div><div class="an-h"><b>Use</b> Click opens the drive; ⏏ ejects it.</div><div class="an-b"><b>Data</b> <code>devs</code> lists devices; <code>fsinfo</code> gives the free bytes.</div></div></div></section><section><div class="h3" style="font-size: 15px; color: var(--t1); margin-bottom: 4px">Toolbar</div><div class="an"><span class="pin">6</span><div><div class="an-n">Back · Forward · Up</div><div class="an-w">History for this tab. Forward is dimmed when there is nothing to go forward to. Up goes to the parent folder.</div><div class="an-h"><b>Use</b> Alt+← / Alt+→ / Alt+↑ (exact keys follow the keybinding preset).</div><div class="an-b"><b>Data</b> Client-side tab history; each step sends <code>list</code>.</div></div></div><div class="an"><span class="pin">7</span><div><div class="an-n">Folder title and count</div><div class="an-w">The current folder's name, in Title type, with its item count beside it.</div><div class="an-h"><b>Use</b> Click the title to get a menu of the parent folders (a jump list).</div><div class="an-b"><b>Data</b> <code>listed</code> gives the count.</div></div></div><div class="an"><span class="pin">8</span><div><div class="an-n">Search</div><div class="an-w">You never need to click it: just start typing anywhere in the window and the text lands here, filtering this folder instantly. Tab widens the search to all subfolders. Understands <code>tag:red</code>. Typing / or ~ instead edits the path (see the Search journey board).</div><div class="an-h"><b>Use</b> Type anywhere, or Ctrl+F / click. Esc clears and restores the folder.</div><div class="an-b"><b>Data</b> <code>filter</code> while typing; <code>search</code> after Tab.</div></div></div><div class="an"><span class="pin">9</span><div><div class="an-n">View switch</div><div class="an-w">Four views: List, Columns, Grid (selected here), Two panes. Can be remembered per folder (Settings › View).</div><div class="an-h"><b>Use</b> Click, or Ctrl+1 to Ctrl+4.</div><div class="an-b"><b>Data</b> Client-side; the view is saved in the state file.</div></div></div><div class="an"><span class="pin">10</span><div><div class="an-n">Sort</div><div class="an-w">Shows the current sort key ("Name"). Opens the Sort dropdown (see the List view board): key, order, folders first, group by kind, hidden files.</div><div class="an-h"><b>Use</b> Click opens the dropdown.</div><div class="an-b"><b>Data</b> <code>sort</code>.</div></div></div><div class="an"><span class="pin">11</span><div><div class="an-n">Settings</div><div class="an-w">Opens the Settings sheet (see the Settings board).</div><div class="an-h"><b>Use</b> Click, or Ctrl+,</div><div class="an-b"><b>Data</b> None.</div></div></div></section><section><div class="h3" style="font-size: 15px; color: var(--t1); margin-bottom: 4px">Tabs</div><div class="an"><span class="pin">12</span><div><div class="an-n">Tabs</div><div class="an-w">Each tab is one open folder with its own history, like browser tabs. The icon is that place's sidebar icon. Documents is a document; Downloads is a download arrow; "rove" uses the code icon because it is a project folder (~/Projects/rove). Only the active tab shows its × close button, and only when 2+ tabs are open.</div><div class="an-h"><b>Use</b> Click switches tabs. Middle-click or × closes. Drag to reorder. Drop files on a tab to put them in that folder; holding a dragged file over a tab for 0.6 s switches to it.</div><div class="an-b"><b>Data</b> Client-side; tabs are saved in the state file.</div></div></div><div class="an"><span class="pin">13</span><div><div class="an-n">New tab</div><div class="an-w">Opens a new tab on the folder you are in. Right-click it for: New Tab Here, New Tab at Home, Reopen Closed Tab, and the recently closed tabs. The tab bar is always visible, even with one tab, so this button is always one click away. See the Tabs journey board.</div><div class="an-h"><b>Use</b> Click, or Ctrl+T. Right-click shows more options. Ctrl+Shift+T reopens the last closed tab.</div><div class="an-b"><b>Data</b> Client-side; the closed-tab history lives in the state file.</div></div></div></section><section><div class="h3" style="font-size: 15px; color: var(--t1); margin-bottom: 4px">Content</div><div class="an"><span class="pin">14</span><div><div class="an-n">Group header</div><div class="an-w">Section title with its count. In Grid view, folders come first ("Folders") and then files ("Files"). With "Group by kind" on, there are more groups (Photos, Videos, Documents…).</div><div class="an-h"><b>Use</b> Not interactive.</div><div class="an-b"><b>Data</b> Grouping comes from the sort settings; counts from <code>listed</code>.</div></div></div><div class="an"><span class="pin">15</span><div><div class="an-n">Folder tile</div><div class="an-w">124 px wide. The icon comes from the user's icon theme; special folders get their themed icon (Code, Pictures, Locked, Cloud…). The name is one line with an ellipsis. Below it is the item count, or a state ("Locked", "Synced").</div><div class="an-h"><b>Use</b> Click selects; double-click or Enter opens; drag moves.</div><div class="an-b"><b>Data</b> <code>rows</code> (names and kinds) plus <code>dirsize</code> / child count, both scoped to the viewport.</div></div></div><div class="an"><span class="pin">16</span><div><div class="an-n">Selected tile and check badge</div><div class="an-w">The selection: soft accent fill, a 1 px accent ring and an accent check badge in the corner.</div><div class="an-h"><b>Use</b> Click selects one; Ctrl+click toggles; Shift+click selects a range; drag a rectangle to select many.</div><div class="an-b"><b>Data</b> Client-side selection, sent as <code>rows</code> indices with <code>listing</code>.</div></div></div><div class="an"><span class="pin">17</span><div><div class="an-n">Thumbnail tile</div><div class="an-w">Photos and videos show a real thumbnail instead of an icon. Video adds a play mark and its duration.</div><div class="an-h"><b>Use</b> Same as any tile; Space opens Quick Look.</div><div class="an-b"><b>Data</b> <code>thumb</code> for visible tiles only; <code>thumbcancel</code> when they scroll away.</div></div></div><div class="an"><span class="pin">18</span><div><div class="an-n">Hovered tile</div><div class="an-w">The hover state: 5% white fill. No border.</div><div class="an-h"><b>Use</b> Mouse over.</div><div class="an-b"><b>Data</b> None.</div></div></div></section><section><div class="h3" style="font-size: 15px; color: var(--t1); margin-bottom: 4px">Footer</div><div class="an"><span class="pin">19</span><div><div class="an-n">Breadcrumb</div><div class="an-w">Where you are, as device › Home › Documents, each part with its place icon. The current folder is highlighted.</div><div class="an-h"><b>Use</b> Click any part to jump there; drop files on a part to move them there.</div><div class="an-b"><b>Data</b> Built from the path; each jump sends <code>list</code>.</div></div></div><div class="an"><span class="pin">20</span><div><div class="an-n">Selection summary</div><div class="an-w">"1 of 16 selected · 4.1 MB". With nothing selected: "16 items".</div><div class="an-h"><b>Use</b> Not interactive.</div><div class="an-b"><b>Data</b> Sizes from the <code>rows</code> / <code>meta</code> replies.</div></div></div><div class="an"><span class="pin">21</span><div><div class="an-n">Free space</div><div class="an-w">Free space on the drive this folder is on.</div><div class="an-h"><b>Use</b> Not interactive.</div><div class="an-b"><b>Data</b> <code>fsinfo</code>.</div></div></div><div class="an"><span class="pin">22</span><div><div class="an-n">Icon size</div><div class="an-w">Grid tile size slider (Grid view only).</div><div class="an-h"><b>Use</b> Drag, or Ctrl+= / Ctrl+-.</div><div class="an-b"><b>Data</b> Client-side.</div></div></div></section><section><div class="h3" style="font-size: 15px; color: var(--t1); margin-bottom: 4px">Context menu</div><div class="an"><span class="pin">23</span><div><div class="an-n">Open</div><div class="an-w">Opens the file in its default app; a folder opens in this tab.</div><div class="an-h"><b>Use</b> Enter</div><div class="an-b"><b>Data</b> Client: xdg mimeapps default (<code>src/open.rs</code> logic).</div></div></div><div class="an"><span class="pin">24</span><div><div class="an-n">Open With ›</div><div class="an-w">A submenu of every app that can open this file type. The default is labelled "Default". "Other application…" opens an app picker. Shown here highlighted in the accent, which is the menu hover state.</div><div class="an-h"><b>Use</b> Hover or → opens the submenu.</div><div class="an-b"><b>Data</b> Desktop entries for the MIME type.</div></div></div><div class="an"><span class="pin">25</span><div><div class="an-n">Quick Look</div><div class="an-w">A full-size preview without opening an app: images, PDFs, text and code, media, archives.</div><div class="an-h"><b>Use</b> Space</div><div class="an-b"><b>Data</b> <code>meta</code>, <code>code</code>, <code>html</code>, <code>thumb</code>, depending on the file.</div></div></div><div class="an"><span class="pin">26</span><div><div class="an-n">Copy · Cut</div><div class="an-w">Puts the selection on the clipboard (Rove's clipboard and the system one, as file URIs). Cut tiles show at 45% opacity until pasted.</div><div class="an-h"><b>Use</b> Ctrl+C / Ctrl+X</div><div class="an-b"><b>Data</b> <code>clipSet</code>; paste runs <code>transfer</code>.</div></div></div><div class="an"><span class="pin">27</span><div><div class="an-n">Rename…</div><div class="an-w">Renames in place: the tile's name turns into a field with the name selected and the extension not (see Components › Grid tiles).</div><div class="an-h"><b>Use</b> F2</div><div class="an-b"><b>Data</b> <code>rename</code>, with Undo.</div></div></div><div class="an"><span class="pin">28</span><div><div class="an-n">Compress</div><div class="an-w">Makes an archive next to the file. The default format is shown on the right (.zip). On an archive this row becomes "Extract".</div><div class="an-h"><b>Use</b> Click</div><div class="an-b"><b>Data</b> Archive job via <code>transfer</code>, bound with <code>menuId</code>.</div></div></div><div class="an"><span class="pin">29</span><div><div class="an-n">Tag dots</div><div class="an-w">Toggles tags on the selection. A tag that is already on draws a ring. The row is hidden on drives that can't store tags.</div><div class="an-h"><b>Use</b> Click a dot.</div><div class="an-b"><b>Data</b> <code>settags</code>; state from <code>tagstates</code>; hidden when <code>fsinfo.tagable</code> is false.</div></div></div><div class="an"><span class="pin">30</span><div><div class="an-n">Send to Shelf</div><div class="an-w">Adds the file to the Shelf in the Omarchy bar, a holding tray you can drag files out of into any app.</div><div class="an-h"><b>Use</b> Click</div><div class="an-b"><b>Data</b> The shelf CLI / plugin.</div></div></div><div class="an"><span class="pin">31</span><div><div class="an-n">Copy Path</div><div class="an-w">Copies the full path as text.</div><div class="an-h"><b>Use</b> Ctrl+Shift+C</div><div class="an-b"><b>Data</b> Client: system clipboard (text).</div></div></div><div class="an"><span class="pin">32</span><div><div class="an-n">Properties</div><div class="an-w">Opens the Properties panel: size, dates, where it is, permissions, photo and media facts.</div><div class="an-h"><b>Use</b> Ctrl+I</div><div class="an-b"><b>Data</b> <code>menuaction</code> <code>properties</code> / <code>contents</code> / <code>facts</code>.</div></div></div><div class="an"><span class="pin">33</span><div><div class="an-n">Move to Trash</div><div class="an-w">The only destructive item: danger colour, always last, after a separator. Trashing shows an Undo toast; nothing asks for confirmation.</div><div class="an-h"><b>Use</b> Del</div><div class="an-b"><b>Data</b> <code>trash</code>; <code>undo</code>.</div></div></div></section></div>
+</div>
+</div>
+
+
+</body>
+</html>

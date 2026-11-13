@@ -1,0 +1,23 @@
+[workspace]
+resolver = "3"
+members = ["crates/rove-ui"]
+exclude = ["vendor"]
+
+[workspace.package]
+edition = "2024"
+license = "MIT"
+
+# Rune is pinned to one `dev` rev. Its README asks apps to patch the same crates Rune patches,
+# from the same rev: a dependency's `[patch]` doesn't reach the workspace that depends on it.
+[patch.crates-io]
+winit = { git = "https://github.com/anomalyco/rune", rev = "d6a0b3cc501f437a1ea2c1c994116f2c6034d3bb" }
+parley_engine = { git = "https://github.com/anomalyco/rune", rev = "d6a0b3cc501f437a1ea2c1c994116f2c6034d3bb" }
+wgpu-hal = { git = "https://github.com/anomalyco/rune", rev = "d6a0b3cc501f437a1ea2c1c994116f2c6034d3bb" }
+accesskit_windows = { git = "https://github.com/anomalyco/rune", rev = "d6a0b3cc501f437a1ea2c1c994116f2c6034d3bb" }
+
+[profile.dev]
+debug = "line-tables-only"
+
+[profile.dev.package."*"]
+debug = false
+opt-level = 2
