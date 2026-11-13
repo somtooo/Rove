@@ -7,9 +7,10 @@ Each milestone that adds UI ends with headless snaps compared against the refere
 (`09-verification.md`, run with `python3 -I tools/verify.py`). Do them in order.
 
 **What changed from the first draft, and why**
-- **The backend comes in at M3, not M6.** Speed is Flea's headline and the riskiest part of
-  Rove (virtualized grid, viewport-scoped requests, first paint). Proving it early beats
-  polishing static screens first. Mock scenes stay, so reference checks keep running.
+- **Owner direction (2026-11-13): real GUI first, backend later.** Open the existing Rune
+  design as a native window with mock data and basic selection/hover/sidebar interactions.
+  No filesystem listing or backend wiring is needed for this preview. We do not need to
+  finish every GUI screen before connecting the backend, but that is not today's task.
 - **Drag and drop gets its own milestone (M8).** Rune can't receive or start file drags on
   Wayland. That is real framework work, not a detail of "Actions".
 - **The library split is M9, after measurement.** See `01-architecture.md` › "The backend".
@@ -26,8 +27,16 @@ Window, sidebar, panel, toolbar, tabs, grouped grid, footer from `src/mock.rs`. 
 pass: 39/39 redline keys within ±1 px, spot colours exact, Solid pixel diff 0.016% / 0.039%.
 Labels sit on Chromium's baselines (`views/text.rs`).
 
-## M2: Menus and the keyboard model
-- Bump Rune to current `dev` first; `verify.py` must still pass.
+## Current: native GUI preview (before full M2)
+- Open `cargo run -p rove-ui -- --scene dark-glass` as a floating 1360×840 window.
+- Mock data only. Tile selection, hover feedback, Esc to clear selection, sidebar show/hide.
+- Keep the pinned Rune rev for this step; no dependency upgrade or backend work is needed.
+- The preview has no file operations. Navigation, search, menus and the view switch are not
+  wired yet. Leave those honest rather than pretending a mock click opened real files.
+- Verify the live render, the interaction handlers, and the existing four headless scenes.
+
+## M2: Menus and the keyboard model (not started)
+- Bump Rune only when required by a feature or fix; `verify.py` must still pass.
 - `views/menu.rs`: one data-driven component for the context menu, the Open With submenu,
   dropdowns and selects. Anchored in-window, flipped to stay 8 pt inside, submenu at the
   parent's right edge −6.
@@ -40,8 +49,12 @@ Labels sit on Chromium's baselines (`views/text.rs`).
 - **Done when:** the full `grid-*` references match, menu included, and scripted keyboard runs
   (`--script`) walk the menu and the grid.
 
-## M3: Wire the backend: read-only browsing
-- `backend/`: spawn `flea --backend` per pane; a client thread reads JSON lines and hands
+## M3: Wire the backend: read-only browsing (deferred until after preview review)
+- Fork Flea's backend and its required shared code into the Rove repository, preserving MIT
+  notices and recording its upstream revision. `~/devcave/flea` stays a read-only reference.
+  No dependency on a separately installed Flea binary or on editing upstream is required.
+- Rove owns its state at `$XDG_STATE_HOME/rove/ui.json`; never modify Flea's state.
+- `backend/`: run the forked backend per pane; a client thread reads JSON lines and hands
   batched events to the UI with `AppHandle::update_if`.
 - `list` (first screenful rides along), `window` when the held range drifts, `listing` on every
   guarded request. Grid virtualized as rows of tiles (`virtual_rows`, columns from the width).

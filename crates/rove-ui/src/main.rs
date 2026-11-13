@@ -15,7 +15,7 @@ mod mock;
 mod theme;
 mod views;
 
-use rune::{AppSpec, WindowOptions};
+use rune::{AppSpec, Key, WindowOptions};
 
 use crate::assets::Assets;
 use crate::theme::{Material, OmarchyTheme, Tokens};
@@ -26,6 +26,8 @@ pub struct State {
     /// the 1440×920 reference frames show it. None fills the surface (a real window).
     pub frame: Option<[f32; 2]>,
     pub assets: Option<Assets>,
+    pub selected: Option<&'static str>,
+    pub sidebar_visible: bool,
 }
 
 /// The window's place in a reference frame.
@@ -43,6 +45,8 @@ fn init() -> State {
         tokens: theme::resolve(&theme, Material::Glass),
         frame: headless.then_some(REFERENCE_FRAME),
         assets: None,
+        selected: Some("shore-at-dusk.jpg"),
+        sidebar_visible: true,
     }
 }
 
@@ -75,22 +79,77 @@ fn main() {
         fonts: FONTS,
         families: ("Inter", "JetBrains Mono"),
         setup: Some(|s: &mut State, waker| s.assets = Some(Assets::load(waker))),
+        on_key: Some(|s, ev, _tx| match &ev.key {
+            Key::Escape => {
+                s.selected = None;
+                true
+            }
+            Key::Command('b') => {
+                s.sidebar_visible = !s.sidebar_visible;
+                true
+            }
+            _ => false,
+        }),
         ..AppSpec::new("Rove", size, init, views::window::view)
     };
     // Transparent, so Glass shows the desktop through `base` (Hyprland blurs it) and headless
     // snaps keep the area around the reference window clear for the backdrop.
     rune::App::new(spec)
         .window_options(WindowOptions { transparent: true, ..Default::default() })
+        .float_on_open()
         .run();
 }
 
 #[cfg(test)]
 mod tests {
+    use rune::{Env, Runtime};
     use rune::tok::TextStyle;
+
+    // Rune publishes measurement-font configuration process-wide. Don't let Runtime::new's
+    // default fonts race the explicit Inter/JetBrains font test.
+    static FONT_CONTEXT: std::sync::Mutex<()> = std::sync::Mutex::new(());
+
+    fn preview() -> Runtime<super::State> {
+        let mut state = super::init();
+        state.frame = None;
+        let mut rt = Runtime::new(state, super::views::window::view, (1360.0, 840.0),
+            Env { system_dark: true, scale: 2.0 });
+        rt.frame(0.0);
+        rt
+    }
+
+    fn click(rt: &mut Runtime<super::State>, key: &str) {
+        let (x, y) = rt.find(key).expect("control exists");
+        rt.pointer_down(x, y);
+        rt.pointer_up(x, y);
+        rt.frame(1.0 / 60.0);
+    }
+
+    #[test]
+    fn clicking_a_tile_changes_the_selection() {
+        let _guard = FONT_CONTEXT.lock().expect("font test lock");
+        let mut rt = preview();
+        assert_eq!(rt.state.selected, Some("shore-at-dusk.jpg"));
+        click(&mut rt, "tile");
+        assert_eq!(rt.state.selected, Some("Invoices"));
+        click(&mut rt, "tile.hover");
+        assert_eq!(rt.state.selected, Some("forest-walk.jpg"));
+    }
+
+    #[test]
+    fn sidebar_can_be_hidden_and_restored_without_backend() {
+        let _guard = FONT_CONTEXT.lock().expect("font test lock");
+        let mut rt = preview();
+        click(&mut rt, "sidebar.toggle");
+        assert!(!rt.state.sidebar_visible);
+        click(&mut rt, "sidebar.show");
+        assert!(rt.state.sidebar_visible);
+    }
 
     /// Milestone 0: Inter renders with tabular figures, and JetBrains Mono is loaded.
     #[test]
     fn fonts_load_with_tabular_figures_and_mono() {
+        let _guard = FONT_CONTEXT.lock().expect("font test lock");
         let _text = rune::text::TextSystem::new(super::FONTS, ("Inter", "JetBrains Mono"));
         let adv = |s: &str, style: TextStyle| rune::text::advance(s, style);
         let tnum = crate::theme::type_::FOOT_NUM;

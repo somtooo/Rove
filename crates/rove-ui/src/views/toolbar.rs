@@ -3,12 +3,20 @@
 use rune::{El, icon, row, spacer};
 
 use crate::icons;
+use crate::State;
 use crate::mock;
 use crate::theme::{Tokens, type_};
 use crate::views::{icon_button, keycap, label, nth, text};
 
-pub fn view(t: &Tokens) -> El {
-    row().key("toolbar").h(56.0).min_h(56.0).pl(14.0).pr(12.0).gap(10.0).items_center()
+pub fn view(s: &State) -> El {
+    let t = &s.tokens;
+    let mut toolbar = row().key("toolbar").h(56.0).min_h(56.0).pl(14.0).pr(12.0).gap(10.0).items_center();
+    if !s.sidebar_visible {
+        toolbar = toolbar.child(icon_button("sidebar.show", &icons::SIDEBAR, 30.0, 16.0, t.t2)
+            .role("button").label("Show sidebar").focusable(true).hover(t.hover)
+            .on_press(|s: &mut State| s.sidebar_visible = true));
+    }
+    toolbar
         .child(nav_group(t))
         .child(title(t))
         .child(spacer())
@@ -38,7 +46,7 @@ fn title(t: &Tokens) -> El {
     let title_base = text::chromium_baseline(&type_::TITLE);
     let count_top = title_base - text::rune_baseline(&type_::COUNT, 2.0);
     row().key("toolbar.title-block").ml(6.0).gap(10.0).items_start().min_w(0.0)
-        .child(label(mock::FOLDER_TITLE, type_::TITLE, t.t1).key("toolbar.title"))
+        .child(label(mock::FOLDER_TITLE, type_::TITLE, t.t1).key("toolbar.title").window_drag())
         .child(rune::text(mock::ITEM_COUNT).font(type_::COUNT).color(t.t3).key("toolbar.count").mt(count_top))
 }
 

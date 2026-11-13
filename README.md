@@ -1,8 +1,9 @@
 # Rove
 
-The Rune frontend for the Flea file manager's backend. Design handoff: `rove-handoff/`.
+The Rune frontend for a fork of Flea's backend. Design and engineering plan: `.plan/`.
 
-Status: Milestones 0 and 1, a static, non-functional grid view from mock data.
+Status: native GUI preview from mock data. Tile selection, hover feedback and the sidebar
+toggle work. There is no backend wiring, real navigation or file mutation.
 
 ## Layout
 
@@ -12,12 +13,13 @@ Status: Milestones 0 and 1, a static, non-functional grid view from mock data.
   - `src/mock.rs`: the reference data. `src/assets.rs`: reference icons and thumbnails.
   - `icons/`: Rove's interface icons (MIT). `assets/fonts/`: Inter and JetBrains Mono (OFL).
 - `tools/verify.py`: the Milestone 1 checks from `docs/09-verification.md`.
-- `vendor/rune`: a read-only clone of Rune for reading its docs. The build fetches Rune by git rev.
+- Rune is fetched by pinned git rev. Separate local Rune and Flea checkouts are references,
+  not runtime dependencies. The backend will be forked into this repository later.
 
 ## Run
 
 ```sh
-cargo run -p rove-ui                     # a window (Glass, colours from the current Omarchy theme)
+cargo run -p rove-ui -- --scene dark-glass # floating native window matching the dark reference
 cargo test -p rove-ui
 python3 -I tools/verify.py               # renders the four scenes and checks them
 target/debug/rove --snap out/x.png --scene dark-solid --size 1440x920 --scale 2
@@ -30,3 +32,11 @@ snap over `reference/backdrops/` before comparing.
 
 The icon-theme icons come from the WhiteSur reference PNGs, read from disk at startup (GPL, so
 they aren't bundled). Set `ROVE_REFERENCE_ASSETS` to point somewhere else.
+
+Try clicking a file or folder, moving over tiles, or hiding/showing the sidebar (also Ctrl+B).
+Esc clears the selection. Other controls remain visual placeholders.
+
+The public repository excludes the third-party reference art and screenshots containing it.
+On this development machine the ignored local `.plan/reference/html/assets/` files supply the
+preview icons, and the ignored reference screens/backdrop support verification. A fresh clone
+does not include those assets. Runtime icon-theme lookup is a later milestone.

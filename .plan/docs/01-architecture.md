@@ -6,19 +6,27 @@ disagreed, the code won; the corrections are listed at the end.
 
 ## The shape
 
+**Owner decisions, 2026-11-13:** fork the backend and required shared code into this Rove
+repository. Do not depend on or modify the local Flea checkout; keep that for reference.
+Rove owns `$XDG_STATE_HOME/rove/ui.json`, not Flea's state. The next deliverable is the
+native mock GUI; backend integration waits. The earlier study below describes the original
+Flea boundaries and process-isolation tradeoffs, not a decision to depend on installed Flea.
+
 ```
 Rove (this repo)
   crates/rove-ui        Rune app, binary `rove`
-    depends on  flea (lib)   keys, uistore/uistate, theme parsing, ui_logic_* view-models
-    talks to    flea --backend (child process, JSON lines)      ← today and through M6
-                flea-core::Session (in-process, typed)          ← only if measured faster (M9)
+    mock data only      ← current GUI preview, no backend linked or launched
+    planned:
+      in-repo backend fork + required shared helpers from Flea
+      child-process transport first; library/session extraction considered separately
+      state at $XDG_STATE_HOME/rove/ui.json
 ```
 
 ## What Rove takes from Flea, and how
 
 Flea is one Rust package with a library (`src/lib.rs`) and a binary (`src/main.rs`). The
-library has no GUI dependency (only foldhash, regex, unicode crates), so Rove can depend on it
-directly, pinned by git rev, the way Rove pins Rune.
+library has no GUI dependency (only foldhash, regex, unicode crates). Its useful modules can
+be retained in the in-repo fork rather than copied into UI code or pulled from upstream at runtime.
 
 | Need | Flea source | Library or binary? | Rove's use |
 |---|---|---|---|
@@ -57,9 +65,9 @@ roughly a millisecond per screenful; it doesn't change the headline numbers.
 build, one process to profile, and other frontends (the TUI, a portal) on the same core.
 
 **Plan:**
-1. M3–M8: Rove spawns `flea --backend` and speaks JSON lines from a client thread. Proven, and
-   exactly what flea-gui does.
-2. M9 (`flea-core`): in Flea, move the process-wide effects into `main`, give the session an
+1. No backend work in the current GUI preview. When integration begins, run the in-repo fork
+   as a child and speak JSON lines from a client thread. No installed Flea dependency.
+2. M9 (`flea-core`): in Rove's fork, move the process-wide effects into `main`, give the session an
    explicit `close()`, pass helper paths in config, and make workers emit typed `Event`s that
    `protoreply.rs` then serializes. The existing seams (`Event` channel, generic `Write`,
    fd-based inbox) make this mostly mechanical. The JSON binary stays as is on top.
@@ -104,13 +112,14 @@ crates/rove-ui/
 Every screen is built from `theme::Tokens`. No literal colours in views. Mock scenes stay
 available after the backend lands, so the reference checks keep running.
 
-## Open decisions (owner)
-1. **Where Flea changes go.** `flea-core`, the `keys.toml` update and any library moves are
-   commits to Flea. Is `thisisgm/flea` ours to change, or do we fork it?
-2. **Shared state file.** Should Rove read and write Flea's `~/.local/state/flea/ui.json`
-   (settings and tabs shared with Flea), or keep its own `rove/ui.json` in the same format?
-   Recommendation: its own file, same format.
-3. **Binary name.** The backend binary stays `flea` until a rename is worth the churn.
+## Settled decisions (owner)
+1. **Backend ownership:** fork into the Rove repo. Any keymap changes and library extraction
+   happen in that fork, not in upstream or the reference checkout.
+2. **Separate state:** `$XDG_STATE_HOME/rove/ui.json`, using compatible helpers where useful.
+   Audit hardcoded Flea cache, config and state paths before enabling the backend.
+3. **Public repository:** third-party GPL art and reference screenshots containing it stay
+   local and ignored. They are not public-repository or runtime-binary assets.
+4. **Immediate scope:** native GUI with mock data. No backend wiring during the preview.
 
 ## Corrections to the handoff's first draft
 - "Every request carrying rows carries `listing`; stale ones are refused." Rows *replies* are

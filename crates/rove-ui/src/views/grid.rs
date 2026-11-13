@@ -36,7 +36,7 @@ pub fn view(s: &State) -> El {
         }
         let mut tiles = row().key(nth("tiles", g)).flex_wrap().gap(6.0).items_start();
         for item in items {
-            tiles = tiles.child(tile(item, s.assets.as_ref(), t, &mut keys));
+            tiles = tiles.child(tile(item, s, &mut keys));
         }
         content = content.child(header).child(tiles);
     }
@@ -52,7 +52,16 @@ fn group_header(g: usize, name: &str, count: usize, t: &Tokens) -> El {
 }
 
 /// A tile: 124 wide, padding 12 8 10, centred column, gap 8, radius 12.
-fn tile(item: &Item, assets: Option<&Assets>, t: &Tokens, keys: &mut Keys) -> El {
+fn tile(item: &Item, s: &State, keys: &mut Keys) -> El {
+    let t = &s.tokens;
+    let assets = s.assets.as_ref();
+    let state = if Some(item.name) == s.selected {
+        TileState::Selected
+    } else if s.frame.is_some() && item.state == TileState::Hover {
+        TileState::Hover
+    } else {
+        TileState::Rest
+    };
     let key = match item.state {
         TileState::Selected => "tile.selected".to_string(),
         TileState::Hover => "tile.hover".to_string(),
@@ -64,7 +73,7 @@ fn tile(item: &Item, assets: Option<&Assets>, t: &Tokens, keys: &mut Keys) -> El
         .child(art(item.art, assets, t, keys))
         .child(label(item.name, type_::TILE_NAME, t.t1).key(name_key).max_w(108.0).truncate())
         .child(label(item.meta, type_::TILE_META, t.t3).key(meta_key).mt(-6.0));
-    match item.state {
+    match state {
         TileState::Rest => {}
         TileState::Hover => tile = tile.fill(t.hover),
         TileState::Selected => {
@@ -72,6 +81,12 @@ fn tile(item: &Item, assets: Option<&Assets>, t: &Tokens, keys: &mut Keys) -> El
                 .box_shadow(crate::theme::inset_ring(1.0, t.accent_line))
                 .child(check_badge(t));
         }
+    }
+    let name = item.name;
+    tile = tile.role("button").label(name).focusable(true)
+        .on_press(move |s: &mut State| s.selected = Some(name));
+    if state != TileState::Selected {
+        tile = tile.hover(t.hover);
     }
     tile
 }

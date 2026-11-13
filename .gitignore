@@ -6,3 +6,5 @@ __pycache__/
 /.plan/reference/html/assets/whitesur-*.png
 /.plan/reference/html/assets/catppuccin-latte-wallpaper.jpg
 /.plan/reference/backdrops/latte@2x.png
+# The reference screenshots contain the same third-party artwork.
+/.plan/reference/screens/

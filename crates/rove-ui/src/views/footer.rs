@@ -3,6 +3,7 @@
 use rune::{El, el, icon, row, spacer};
 
 use crate::icons;
+use crate::State;
 use crate::mock;
 use crate::theme::{Tokens, type_};
 use crate::views::{label_at, nth};
@@ -10,13 +11,21 @@ use crate::views::{label_at, nth};
 /// The footer's 37 pt content box centres 20 pt lines half a point off the pixel grid.
 const HALF: f32 = 0.5;
 
-pub fn view(t: &Tokens) -> El {
+pub fn view(s: &State) -> El {
+    let t = &s.tokens;
+    let summary = match s.selected {
+        None => mock::ITEM_COUNT.to_string(),
+        Some("shore-at-dusk.jpg") => mock::SELECTION_SUMMARY.to_string(),
+        Some(name) => mock::FILES.iter().find(|item| item.name == name)
+            .map_or_else(|| "1 of 16 selected".to_string(),
+                |item| format!("1 of 16 selected · {}", item.meta)),
+    };
     row().key("footer").h(38.0).min_h(38.0).pl(8.0).pr(10.0).gap(10.0).items_center()
         .border_sides([1.0, 0.0, 0.0, 0.0], t.line)
         .border_layout()
         .child(crumbs(t))
         .child(spacer())
-        .child(label_at(mock::SELECTION_SUMMARY, type_::FOOT_NUM, t.t2, HALF).key("footer.summary"))
+        .child(label_at(&summary, type_::FOOT_NUM, t.t2, HALF).key("footer.summary"))
         .child(el().size(1.0, 14.0).fill(t.line2))
         .child(label_at(mock::FREE_SPACE, type_::FOOT_NUM.lh(16.0), t.t3, HALF).key("footer.free"))
         .child(slider(t))

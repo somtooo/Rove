@@ -13,7 +13,11 @@ pub const WINDOW_SIZE: (f32, f32) = (1360.0, 840.0);
 pub fn view(s: &State, cx: &mut Cx<State>) -> El {
     crate::views::text::set_scale(cx.env().scale);
     let t = &s.tokens;
-    let body = row().w_full().h_full().child(sidebar::view(t)).child(panel(s));
+    let mut body = row().w_full().h_full();
+    if s.sidebar_visible {
+        body = body.child(sidebar::view(t));
+    }
+    let body = body.child(panel(s));
     match s.frame {
         Some([x, y]) => {
             let [a, b] = &t.shadows.window;
@@ -40,8 +44,8 @@ fn panel(s: &State) -> El {
         .border(1.0, t.line)
         .border_layout()
         .clip_rounded(12.0)
-        .child(toolbar::view(t))
+        .child(toolbar::view(s))
         .child(tabs::view(t))
         .child(grid::view(s))
-        .child(footer::view(t))
+        .child(footer::view(s))
 }

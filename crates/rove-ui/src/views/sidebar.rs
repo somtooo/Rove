@@ -3,6 +3,7 @@
 use rune::{El, col, el, icon, row, spacer};
 
 use crate::icons;
+use crate::State;
 use crate::mock::{self, RemoteState};
 use crate::theme::{Tokens, type_};
 use crate::views::{icon_button, label, nth};
@@ -36,8 +37,10 @@ pub fn view(t: &Tokens) -> El {
 
 fn brand(t: &Tokens) -> El {
     row().key("sidebar.brand").h(36.0).pl(10.0).pr(2.0).items_center().justify_between()
-        .child(label("Rove", type_::BRAND, t.t1))
-        .child(icon_button("sidebar.toggle", &icons::SIDEBAR, 30.0, 16.0, t.t2))
+        .child(label("Rove", type_::BRAND, t.t1).window_drag())
+        .child(icon_button("sidebar.toggle", &icons::SIDEBAR, 30.0, 16.0, t.t2)
+            .role("button").label("Hide sidebar").focusable(true).hover(t.hover)
+            .on_press(|s: &mut State| s.sidebar_visible = false))
 }
 
 /// A section label (`.sec`): padding 14 10 6, 12/16/500 t3, optional 20×20 trailing button.
@@ -58,7 +61,7 @@ fn place_row(key: String, i: &'static rune::text::Icon, name: &str, selected: bo
         (rune::Color::TRANSPARENT, t.t3, t.t2, type_::BODY)
     };
     let icon_key = if key == "sidebar.row" { "sidebar.row.icon".to_string() } else { format!("{key}.icon") };
-    let mut r = row().key(key).w_full().h(32.0).px(10.0).gap(10.0).radius(8.0).items_center().fill(fill)
+    let mut r = row().key(key).w_full().h(32.0).px(10.0).gap(10.0).radius(8.0).items_center().fill(fill).hover(t.hover)
         .child(icon(i, 18.0).key(icon_key).color(icon_color))
         .child(label(name, style, text_color));
     if let Some(end) = end {
