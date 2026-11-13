@@ -1,86 +1,127 @@
 # Architecture
 
-## What stays and what goes
-The starting point is the Flea repository (github.com/thisisgm/flea, v0.4.2). It has three layers:
+Owner: the lead engineer. Verified against Flea `5da91810` and Rune `dev` on 2026-11-13
+(sources: `~/devcave/flea`, `~/devcave/rune`). Where this doc and the handoff's first draft
+disagreed, the code won; the corrections are listed at the end.
 
-| Layer | Path | Fate |
+## The shape
+
+```
+Rove (this repo)
+  crates/rove-ui        Rune app, binary `rove`
+    depends on  flea (lib)   keys, uistore/uistate, theme parsing, ui_logic_* view-models
+    talks to    flea --backend (child process, JSON lines)      ← today and through M6
+                flea-core::Session (in-process, typed)          ← only if measured faster (M9)
+```
+
+## What Rove takes from Flea, and how
+
+Flea is one Rust package with a library (`src/lib.rs`) and a binary (`src/main.rs`). The
+library has no GUI dependency (only foldhash, regex, unicode crates), so Rove can depend on it
+directly, pinned by git rev, the way Rove pins Rune.
+
+| Need | Flea source | Library or binary? | Rove's use |
+|---|---|---|---|
+| Listing, thumbnails, search, transfers, trash, tags, devices, mounts | `src/backend/` (~87k non-test lines) | binary only | spawn `flea --backend` |
+| Protocol types | `src/protocol.rs` (client side: only `list`, `window`, `quit`) | library | extend, or write Rove's own typed client |
+| Keymap with Default/Vim/Mac/Windows presets | `src/keys.rs`, `keys.toml`, generated `keys_generated.rs` | library | use directly; update `keys.toml` to `11-keybindings.md` |
+| Settings and session state (`$XDG_STATE_HOME/flea/ui.json`) | `src/uistore.rs`, `src/uistate.rs` | library | use the same store format (decision on sharing the file: see below) |
+| Omarchy `colors.toml` parsing | `src/theme/` | library | parse; the watcher exists but **nothing calls it**, so Rove writes its own watch |
+| View-model logic: menus, file ops, rail places, device rail, Open With, settings pages, previews… | `src/ui_logic_*` (25 modules, ~67k non-test lines) | library, no GUI deps | **reuse instead of re-implementing**, module by module, after checking each one's I/O |
+| Open, default apps | `src/open.rs` (delegates to `gio open`), `src/desktopid.rs`, `src/defaults.rs` | binary only | through the backend, or move into the library |
+| MIME type and icon name per file | backend (`mime.rs` reads shared-mime-info; rows carry an icon *name*) | binary only | arrives on the wire; Rove resolves the name to a file |
+| Icon-theme lookup (index.theme, inherits, hicolor) | `ui_logic_open_with_properties/openwith_icons.rs` (app icons only) | library | starting point for Rove's file-icon lookup |
+| File clipboard on Wayland (copy *and* cut) | `src/clip/` (std-only wl data-control client) via `clipSet/clipGet/clipClear/clipWatch` | binary | use through the backend. This covers Rune's gap (Rune's clipboard can't do cut) |
+
+## The backend: child process first, library later
+
+The owner wants Flea's backend as a library ("libghostty for file managers"). The study says
+yes, eventually, but not as the first step, and not for raw speed.
+
+**What the wire actually costs** (Flea's own numbers): spawn to first `listed` is 3.1–3.4 ms;
+a 300-row `rows` reply takes about 0.9 ms to produce and about 0.9 ms to parse. The big cost was
+round trips, and protocol rule 3 already removed it (first screenful rides along with `list`:
+4 ms instead of 64 ms). Nobody has measured the hop in isolation. An in-process API saves
+roughly a millisecond per screenful; it doesn't change the headline numbers.
+
+**What in-process costs us today:**
+- `let_go_of_client()` points fds 0 and 1 at `/dev/null` (`run.rs:1010`): it would silence Rove.
+- `pin_mmap_threshold()` changes glibc's allocator for the whole process (`heap.rs:16`), and the
+  file-descriptor limit is raised process-wide (`picker_limits.rs:45`).
+- Workers re-launch `current_exe()` (3D helper, plugin shelf, archive, locale, video worker): in
+  Rove that is Rove.
+- Shutdown is stdin EOF, and stuck mount threads are cleaned up by `exit()`.
+- About 250 `unsafe` blocks: a crash today kills only the child; in-process it kills the window.
+
+**What a library is good for:** typed requests and events instead of hand-written JSON, one
+build, one process to profile, and other frontends (the TUI, a portal) on the same core.
+
+**Plan:**
+1. M3–M8: Rove spawns `flea --backend` and speaks JSON lines from a client thread. Proven, and
+   exactly what flea-gui does.
+2. M9 (`flea-core`): in Flea, move the process-wide effects into `main`, give the session an
+   explicit `close()`, pass helper paths in config, and make workers emit typed `Event`s that
+   `protoreply.rs` then serializes. The existing seams (`Event` channel, generic `Write`,
+   fd-based inbox) make this mostly mechanical. The JSON binary stays as is on top.
+3. Then measure an in-process Rove against the child (first paint, settled, PSS). Switch only if
+   it wins. Keep the child as a fallback either way.
+
+Where performance really is to be found: the frontend. Flea's GPUI build settles a 100k folder
+in 753 ms and maps its first window in 319 ms (`docs/bench/0.4.0-20261102.md:89`). The backend
+part of that is a few ms. Rove's job is to beat the frontend side.
+
+## Rune: what we can and can't rely on
+
+| Need | Rune today | Consequence |
 |---|---|---|
-| Backend (`flea --backend`): listing, thumbnails, transfers, trash, search, devices, tags, undo… | `src/backend/`, `src/*.rs`, protocol in `docs/protocol.md` | **Keep.** It is the only seam. Rename the binary and command to `rove` when convenient. |
-| View-model logic | `src/ui_logic_*` | **Replace.** Read it for behaviour and edge cases (menus, rails, previews), but don't port its structure. |
-| GPUI frontend | `crates/flea-gui/` | **Replace** with the Rune app. |
-| QML frontend | `ui/` | Already frozen and dead. Ignore. |
-| TUI | `src/tui/` | Out of scope. |
+| 100k-row list | `virtual_rows(count, est, key, build)` builds mounted rows only; keys are compared for every row each commit, so set `.virtual_rows_version(v)` | fine |
+| Grid | no 2D virtualizer | virtualize **rows of tiles**; column count from the width |
+| Menus | no native menus on Linux; in-window `El::anchored` flips and stays 8 pt inside the window; rune-kit `Menu` has no submenu delay or safe triangle and the wrong look | our own `menu.rs`, drawn in-window (as the design specifies) |
+| Arrow keys in a grid | `focus_group` moves in flat order only | our own 2D cursor in `on_key` |
+| Popover blur | `El::backdrop_blur(sigma)` takes the CSS `blur()` value directly (so 28, not 14); max 4 per frame | fine |
+| Glass | transparent windows work; Hyprland blurs translucent windows itself | fine; verify on a real session |
+| Drag files **in** on Wayland | **no** (`on_drop_files` is macOS, Windows, X11; winit 0.30 has no `wl_data_device`) | blocker for drag-and-drop journeys; see M8 |
+| Drag files **out** on Linux | **no** (macOS and Windows only) | same |
+| Clipboard | text and file copy via arboard; **no cut** | use Flea's backend clipboard instead |
+| OS notifications | `rune-notify` is a stub on Linux | not needed: toasts are in-app |
+| Events from a backend thread | `AppHandle::update_if(|s, tx| …)`, batched; `AppSpec::setup` is a plain `fn`, so pass channels through `App::init` | client thread → batched updates |
+| Accessibility | AccessKit/AT-SPI on by default | free; name our elements |
+| API stability | version 0.0.1, 2,300+ commits in three weeks | pin a rev, bump deliberately, rerun `tools/verify.py` on every bump |
 
-## The new crate
+## Crate layout (current and planned)
+
 ```
-crates/rove-ui/            Rune app (binary: rove)
-  src/main.rs              AppSpec, scenes for headless snaps (see 09-verification.md)
-  src/theme.rs             tokens + Omarchy resolution (start from starter/theme.rs)
-  src/icons.rs             interface icons (include_str! the SVGs in icons/svg)
-  src/icon_theme.rs        freedesktop icon-theme lookup for file and folder icons (Milestone 5)
-  src/backend/             child process + JSON-lines client (Milestone 6)
-  src/views/
-    window.rs              window base, sidebar | panel split
-    sidebar.rs             places, tags, network, devices
-    toolbar.rs             nav group, title, search, view switch, sort, settings
-    tabs.rs                tab bar
-    grid.rs                grouped tile grid (virtualized)
-    list.rs                list view + header (virtualized)
-    footer.rs              breadcrumb, summary, free space, size slider
-    menu.rs                ONE menu component: context menu, submenu, dropdown, select
-    settings.rs            sheet + pages
-  src/mock.rs              the reference data (Milestones 1 to 4)
+crates/rove-ui/
+  src/main.rs           AppSpec, scenes
+  src/theme.rs          tokens + Omarchy resolution
+  src/icons.rs          interface icons
+  src/assets.rs         reference images (M1–M4); replaced by icon_theme.rs + thumbnails
+  src/mock.rs           reference data, kept for scenes and verification after M3
+  src/views/            window, sidebar, toolbar, tabs, grid, footer, text (Chromium baselines)
+  planned: views/menu.rs, views/list.rs, views/settings.rs, keymap.rs,
+           backend/ (client thread, protocol), icon_theme.rs, theme_watch.rs
 ```
-Build every screen from `theme::Tokens`. No literal colours in views.
+Every screen is built from `theme::Tokens`. No literal colours in views. Mock scenes stay
+available after the backend lands, so the reference checks keep running.
 
-## Rune notes that matter here
-- **Colour:**
-  - `rune::Color` is linear sRGB with straight alpha.
-  - `rune::hex("#RRGGBB")` decodes sRGB, and `.alpha(a)` sets alpha.
-  - Windows blend in sRGB-encoded space by default, like CSS, so keep that default.
-- **Text:**
-  - Inter 4.1 is embedded.
-  - Add JetBrains Mono (OFL) via `AppSpec` fonts for paths and code.
-  - Enable tabular figures for numbers.
-- **Layout:** Taffy flexbox; the doc values map to `row()/col()`, `.gap()`, `.p()`, `.w()/.h()`, `.radius()`.
-  - Mind the three Taffy gotchas in Rune's README: `.grow` needs a bounded parent, use `.min_h(0.0)` on nested columns, and `.virtualize` needs `.growth`.
-  - **List rows must not shrink** (`flex: none`). That was a real bug caught in the mockup.
-- **Shadows:** `.shadow(y, blur, color)` / `.box_shadow(Shadow)`. Blur follows CSS `box-shadow`, so the token values transfer directly.
-- **Blur:**
-  - in-app frosted popovers: `El::backdrop_blur(sigma)`, where CSS `blur(28px)` = sigma 14
-  - behind the window: the compositor's job (below)
-- **Icons:** SVG via `ImageCache::svg(bytes, size_pt, scale)`, or Rune's `Icon` type. Stroke icons must tint to `currentColor`: render each with the token colour.
-- **Motion:** `motion::SNAPPY` for popovers and hover retargets, `motion::DEFAULT` for sheets, `motion::CALM` for theme colour changes. Reduced motion means opacity only.
-- **Headless agent tooling:** `--snap out.png --scene NAME --size 1440x920 --scale 2 --theme dark|light`, plus `--tree tree.json`. Use these to verify every milestone.
+## Open decisions (owner)
+1. **Where Flea changes go.** `flea-core`, the `keys.toml` update and any library moves are
+   commits to Flea. Is `thisisgm/flea` ours to change, or do we fork it?
+2. **Shared state file.** Should Rove read and write Flea's `~/.local/state/flea/ui.json`
+   (settings and tabs shared with Flea), or keep its own `rove/ui.json` in the same format?
+   Recommendation: its own file, same format.
+3. **Binary name.** The backend binary stays `flea` until a rename is worth the churn.
 
-## Glass on Hyprland
-1. Create the window transparent. Paint `base` (translucent) as the root fill.
-2. Hyprland's blur (`decoration { blur { enabled = true } }`) blurs whatever is behind translucent pixels. Nothing to do in-app.
-3. Rove ships a recommended window rule in its docs, e.g. `windowrule = opacity 1.0 override, class:^(rove)$`, so that a global inactive opacity doesn't double up.
-4. The **Solid** material is the fallback: no transparency support, a user choice, or when screenshotting.
-5. macOS (later): `El::system_material(SystemMaterial::Popover)` in a transparent window.
-
-## Backend protocol: commands you'll use
-JSON lines over the child's stdin/stdout. See `docs/protocol.md` in the Flea repo.
-
-| Need | Request → reply |
-|---|---|
-| Open a folder | `list {path, first, hidden}` → `listed` + `rows` (first screenful rides along) |
-| Scroll | `window {start, count}` → `rows` |
-| Sort / filter | `sort`, `filter` |
-| Search | `search` / `searchquery` / `searchcancel` → `searching`, `searched` |
-| Thumbnails | `thumb` / `thumbcancel` → `thumbed` (viewport only) |
-| Folder sizes | `dirsize` / `dirsizecancel` → `dirsized` |
-| Free space, tag support | `fsinfo` |
-| Devices | `devs` |
-| Menu actions on a selection | `menuaction` `snapshot` / `activate` / `properties` / `contents` / `facts` / `prepareDelete` / `delete` |
-| Copy, move, compress, extract | `transfer`, `collisions`, `mergecollisions`, `transfercancel` |
-| Trash | `trash`, `trashbrowse`, `undo` |
-| Rename, new folder, duplicate | `rename`, `bulkrename`, `mkdir`, `duplicate` |
-| Tags | `settags`, `tagstates` |
-| Clipboard | `clipSet`, `clipGet`, `clipClear` |
-| Git status | `gitstatus`, `gitrows` |
-| Unasked | `changed`: the folder changed on disk; re-list |
-
-Invariants to respect: every request carrying `rows` also carries the `listing` number it read
-them from, and stale listings are refused. Errors arrive as messages, not exit codes.
+## Corrections to the handoff's first draft
+- "Every request carrying rows carries `listing`; stale ones are refused." Rows *replies* are
+  always stamped. On requests the field is optional, and only nine file-acting commands refuse
+  a stale one (`rowguard.rs:8`); read-only requests (`thumb`, `dirsize`, `window`…) never are.
+- "Flea's `src/theme/watch.rs` already watches colors.toml." It exists (polling) but nothing
+  calls it; flea-gui reads the file once.
+- "`src/open.rs`: xdg mimeapps default." It delegates to `gio open`; defaults are read via
+  `gio mime` and written via `xdg-mime` (`defaults.rs`).
+- "Flea does icon-theme lookup." For app icons only. File rows carry an icon name from
+  shared-mime-info; resolving it to a file is Rove's job.
+- The protocol table lists about half the commands. `docs/protocol.md` in Flea is the reference,
+  and it too misses `peek`, `paths`, `archive`, `convert`, `formats`.
+- Rune `backdrop_blur` takes the CSS value (28), not σ = 14.

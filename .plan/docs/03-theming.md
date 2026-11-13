@@ -5,7 +5,7 @@ Rove reads the theme for **three things only**.
 
 ## The source
 `~/.local/state/omarchy/current/theme/colors.toml`. `current` is a symlink that flips when the user changes theme.
-Flea's `src/theme/watch.rs` already watches it, so reuse that. Values may be quoted with `"` or `'`.
+Flea parses this file (`flea::theme`), but nothing in Flea watches it live; Rove has its own watcher (see `01-architecture.md`). Values may be quoted with `"` or `'`.
 
 ## What is read
 
