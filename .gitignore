@@ -1,3 +1,8 @@
 /target/
 /out/
 __pycache__/
+# Third-party art: GPL (WhiteSur icons) or unclear licence (Omarchy wallpaper).
+# Kept on disk for the reference HTML and verify.py; never committed.
+/.plan/reference/html/assets/whitesur-*.png
+/.plan/reference/html/assets/catppuccin-latte-wallpaper.jpg
+/.plan/reference/backdrops/latte@2x.png
