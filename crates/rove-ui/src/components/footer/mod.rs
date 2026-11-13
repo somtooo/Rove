@@ -3,10 +3,10 @@
 use rune::{El, el, icon, row, spacer};
 
 use crate::icons;
-use crate::State;
-use crate::mock;
+use crate::app::State;
+use crate::fixtures;
 use crate::theme::{Tokens, type_};
-use crate::views::{label_at, nth};
+use crate::components::{label_at, nth};
 
 /// The footer's 37 pt content box centres 20 pt lines half a point off the pixel grid.
 const HALF: f32 = 0.5;
@@ -14,9 +14,9 @@ const HALF: f32 = 0.5;
 pub fn view(s: &State) -> El {
     let t = &s.tokens;
     let summary = match s.selected {
-        None => mock::ITEM_COUNT.to_string(),
-        Some("shore-at-dusk.jpg") => mock::SELECTION_SUMMARY.to_string(),
-        Some(name) => mock::FILES.iter().find(|item| item.name == name)
+        None => fixtures::ITEM_COUNT.to_string(),
+        Some("shore-at-dusk.jpg") => fixtures::SELECTION_SUMMARY.to_string(),
+        Some(name) => fixtures::FILES.iter().find(|item| item.name == name)
             .map_or_else(|| "1 of 16 selected".to_string(),
                 |item| format!("1 of 16 selected · {}", item.meta)),
     };
@@ -27,7 +27,7 @@ pub fn view(s: &State) -> El {
         .child(spacer())
         .child(label_at(&summary, type_::FOOT_NUM, t.t2, HALF).key("footer.summary"))
         .child(el().size(1.0, 14.0).fill(t.line2))
-        .child(label_at(mock::FREE_SPACE, type_::FOOT_NUM.lh(16.0), t.t3, HALF).key("footer.free"))
+        .child(label_at(fixtures::FREE_SPACE, type_::FOOT_NUM.lh(16.0), t.t3, HALF).key("footer.free"))
         .child(slider(t))
 }
 
@@ -35,8 +35,8 @@ pub fn view(s: &State) -> El {
 /// The last is current: fill, t1 500, icon accent.
 fn crumbs(t: &Tokens) -> El {
     let mut r = row().key("footer.crumbs").gap(2.0).items_center().min_w(0.0);
-    let last = mock::CRUMBS.len() - 1;
-    for (i, c) in mock::CRUMBS.iter().enumerate() {
+    let last = fixtures::CRUMBS.len() - 1;
+    for (i, c) in fixtures::CRUMBS.iter().enumerate() {
         if i > 0 {
             r = r.child(icon(&icons::CHEV_R, 14.0).color(t.t4));
         }
@@ -56,7 +56,7 @@ fn crumbs(t: &Tokens) -> El {
 
 /// The icon-size slider: grid 14, a 72×4 track with the filled part and a 14 px knob, grid 20.
 fn slider(t: &Tokens) -> El {
-    let k = mock::ICON_SIZE;
+    let k = fixtures::ICON_SIZE;
     let track = el().key("footer.slider").size(72.0, 4.0).radius(2.0).fill(t.fill2)
         .child(el().absolute(0.0, 0.0).size(72.0 * k, 4.0).radius(2.0).fill(t.t3))
         .child(el().absolute(72.0 * k - 7.0, -5.0).size(14.0, 14.0).radius(7.0).fill(t.knob).box_shadow(t.shadows.knob));

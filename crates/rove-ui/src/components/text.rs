@@ -1,4 +1,4 @@
-//! Text labels placed on Chromium's baselines.
+//! Shared text component: labels placed on Chromium's baselines.
 //!
 //! The reference PNGs were rendered by Chromium on Linux, which places a line's baseline from
 //! font metrics taken at CSS px: ascent and descent rounded to whole pixels, one pixel moved from

@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Milestone 1 verification (docs/09-verification.md), run with `python3 -I tools/verify.py`.
+"""Grid reference verification (docs/09-verification.md), run with `python3 -I tools/verify.py`.
 
 For each scene it renders `--snap` (2x) and `--tree`, then checks:
   1. geometry: keyed tree rects against reference/redlines.json, within +-1 px;
   2. colour spot checks in Solid scenes, +-1 per channel;
   3. pixels: `magick compare -metric AE -fuzz 6%` against the reference PNG, with the context
-     menu region (absent until M2) and every text rect masked out (text is checked by
-     position, size and colour, not pixels).
+     menu region (absent until the first menu-backed feature) and every text rect masked out
+     (text is checked by position, size and colour, not pixels).
 Writes out/grid-<scene>@2x.png, out/cmp-<scene>.png (snap over the backdrop) and
 out/diff-<scene>.png.
 """
@@ -21,16 +21,16 @@ REF = os.path.join(HANDOFF, "reference")
 OUT = os.path.join(ROOT, "out")
 BIN = os.path.join(ROOT, "target", "debug", "rove")
 FRAME = (40, 40)  # the window's place in a reference frame
-# The context menu and submenu, window-relative (M1 masks them; they arrive in M2).
+# The context menu and submenu, window-relative (masked until a menu-backed slice lands).
 MENU = (572, 364, 1058, 782)
 # Redline keys that belong to later milestones.
 LATER = ("menu", "submenu")
 
 SCENES = ["dark-glass", "dark-solid", "latte-glass", "latte-solid"]
 
-# Spot checks at window-relative points. For M1 the selected tile is checked against its own
+# Spot checks at window-relative points. The selected tile is checked against its own
 # computed value: the reference's #2A3147 / #E1EAFD include the context menu's shadow (the
-# point is 42 px left of the menu), which M1 doesn't draw.
+# point is 42 px left of the menu), which the current grid doesn't draw.
 SPOTS = {
     "dark-solid": [
         ("sidebar background", (100, 760), "0F1013"),

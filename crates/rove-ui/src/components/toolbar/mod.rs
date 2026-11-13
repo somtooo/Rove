@@ -3,10 +3,10 @@
 use rune::{El, icon, row, spacer};
 
 use crate::icons;
-use crate::State;
-use crate::mock;
+use crate::app::State;
+use crate::fixtures;
 use crate::theme::{Tokens, type_};
-use crate::views::{icon_button, keycap, label, nth, text};
+use crate::components::{icon_button, keycap, label, nth, text};
 
 pub fn view(s: &State) -> El {
     let t = &s.tokens;
@@ -46,14 +46,14 @@ fn title(t: &Tokens) -> El {
     let title_base = text::chromium_baseline(&type_::TITLE);
     let count_top = title_base - text::rune_baseline(&type_::COUNT, 2.0);
     row().key("toolbar.title-block").ml(6.0).gap(10.0).items_start().min_w(0.0)
-        .child(label(mock::FOLDER_TITLE, type_::TITLE, t.t1).key("toolbar.title").window_drag())
-        .child(rune::text(mock::ITEM_COUNT).font(type_::COUNT).color(t.t3).key("toolbar.count").mt(count_top))
+        .child(label(fixtures::FOLDER_TITLE, type_::TITLE, t.t1).key("toolbar.title").window_drag())
+        .child(rune::text(fixtures::ITEM_COUNT).font(type_::COUNT).color(t.t3).key("toolbar.count").mt(count_top))
 }
 
 fn search(t: &Tokens) -> El {
     row().key("toolbar.search").w(232.0).h(32.0).pl(10.0).pr(6.0).gap(8.0).radius(10.0).fill(t.fill).items_center()
         .child(icon(&icons::SEARCH, 16.0).color(t.t3))
-        .child(label(&format!("Search {}", mock::FOLDER_TITLE), type_::LABEL, t.t3).grow(1.0).truncate())
+        .child(label(&format!("Search {}", fixtures::FOLDER_TITLE), type_::LABEL, t.t3).grow(1.0).truncate())
         .child(row().gap(3.0).items_center()
             .child(keycap("toolbar.search.keycap", "Ctrl", t))
             .child(keycap("toolbar.search.keycap#1", "F", t)))
@@ -79,6 +79,6 @@ fn view_switch(t: &Tokens) -> El {
 fn sort_button(t: &Tokens) -> El {
     row().key("toolbar.sort-button").h(32.0).px(12.0).gap(7.0).radius(9.0).items_center().justify_center()
         .child(icon(&icons::SORT, 16.0).color(t.t2))
-        .child(label(mock::SORT_KEY, type_::LABEL_500, t.t2))
+        .child(label(fixtures::SORT_KEY, type_::LABEL_500, t.t2))
         .child(icon(&icons::CHEV_D, 14.0).color(t.t2))
 }

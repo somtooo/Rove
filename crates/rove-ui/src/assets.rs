@@ -1,8 +1,8 @@
-//! Images for the static milestones: icon-theme icons and thumbnails.
+//! Images for the mock preview and reference scenes: icon-theme icons and thumbnails.
 //!
 //! Icon-theme icons are the WhiteSur reference PNGs in `.plan/reference/html/assets`,
 //! read from disk at startup. They are GPL-3.0 and never bundled into the binary. The
-//! freedesktop icon-theme lookup replaces this in Milestone 5.
+//! real file-art slice replaces this with freedesktop icon-theme lookup.
 //!
 //! Rune has no alpha-shaped drop shadow, so each icon's CSS `filter: drop-shadow(0 y blur c)` is
 //! made once here: the icon's alpha, Gaussian-blurred (σ = blur / 2, in device pixels), tinted
@@ -13,7 +13,7 @@ use std::path::PathBuf;
 
 use rune::{Image, ImageCache, Waker};
 
-use crate::mock::{self, Thumb};
+use crate::fixtures::{self, Thumb};
 
 /// Device pixels per point the images are prepared at. The 128 px reference PNGs draw at
 /// 64 pt, so 2× is their native density; other scales sample their mips.
@@ -51,7 +51,7 @@ impl Assets {
         let cache = ImageCache::new(waker);
         let dir = reference_assets_dir();
         let mut icons = HashMap::new();
-        for name in mock::theme_icon_names() {
+        for name in fixtures::theme_icon_names() {
             let path = dir.join(format!("whitesur-{name}.png"));
             let bytes = match std::fs::read(&path) {
                 Ok(b) => b,

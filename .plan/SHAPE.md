@@ -1,5 +1,11 @@
 # SHAPE: Rove, a file manager that looks as good as it is fast
 
+**Engineering update, 2026-11-13:** the delivery sequence below is the original handoff.
+The current sequence is `docs/08-milestones.md`: usable vertical slices, each through its
+component and the required code in Rove's Flea fork, with tests and performance evidence.
+The design principles here are unchanged; backend/framework findings are corrected in
+`docs/01-architecture.md`.
+
 ## Problem
 Flea is the fastest GUI file manager on Omarchy: a 100,000-file folder settles in 0.75 s.
 But it is hard to look at, and that is the reason people don't use it.

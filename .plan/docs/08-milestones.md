@@ -1,112 +1,205 @@
-# Milestones
+# Milestones: vertical slices
 
-Owner: the lead engineer. Revised 2026-11-13 after reading Flea and Rune
-(`01-architecture.md` has the findings). Everything here may change; the design does not.
+Owner: the lead engineer. Revised with som2 on 2026-11-13.
+This replaces the old M0–M9, layer-by-layer sequence. The design remains in force.
+Compact toolbar/footer behaviour still needs the designer; do not invent breakpoints.
 
-Each milestone that adds UI ends with headless snaps compared against the references
-(`09-verification.md`, run with `python3 -I tools/verify.py`). Do them in order.
+## How we work
 
-**What changed from the first draft, and why**
-- **Owner direction (2026-11-13): real GUI first, backend later.** Open the existing Rune
-  design as a native window with mock data and basic selection/hover/sidebar interactions.
-  No filesystem listing or backend wiring is needed for this preview. We do not need to
-  finish every GUI screen before connecting the backend, but that is not today's task.
-- **Drag and drop gets its own milestone (M8).** Rune can't receive or start file drags on
-  Wayland. That is real framework work, not a detail of "Actions".
-- **The library split is M9, after measurement.** See `01-architecture.md` › "The backend".
-- Menus are drawn in-window by us: Rune has no Linux native menus and rune-kit's `Menu` lacks
-  submenu timing, the safe triangle and the design's look.
-- The clipboard (copy and cut) goes through Flea's backend clipboard, not Rune's.
+One slice delivers one usable behaviour through every layer it needs:
 
-## M0: Scaffold ✅ (2026-11-13)
-Rune pinned to `dev` `d6a0b3cc`; theme ported; Inter + JetBrains Mono (tabular figures tested);
-four scenes.
+1. Choose a user action or result from the design and journeys.
+2. Work in the component that owns it, including its state and tests.
+3. Read Flea's implementation. Bring only the required code and its dependencies into
+   Rove's fork, with its upstream revision and licence notices. Do not import unrelated
+   features or rewrite working backend logic just to make it fit a folder.
+4. Connect the component to that code through a narrow request/event boundary. Extend
+   existing infrastructure only as the feature needs it.
+5. Test the full behaviour, error paths and performance. Compare the fixed mock scenes
+   against their references. Try the real native window.
+6. Commit a working slice before starting the next one. Split any slice that cannot be
+   reviewed or tested as one coherent behaviour.
 
-## M1: Static grid view ✅ (2026-11-13)
-Window, sidebar, panel, toolbar, tabs, grouped grid, footer from `src/mock.rs`. All four scenes
-pass: 39/39 redline keys within ±1 px, spot colours exact, Solid pixel diff 0.016% / 0.039%.
-Labels sit on Chromium's baselines (`views/text.rs`).
+There is no "finish all UI", "import the backend", or "optimize later" phase. Reusable
+components, menus, protocol support and storage grow out of the features that need them.
+A slice need not change Flea if the required backend capability is already present.
+Check off a slice only when its acceptance checks pass; the list below is not a claim of
+implemented backend functionality.
 
-## Current: native GUI preview (before full M2)
-- Open `cargo run -p rove-ui -- --scene dark-glass` as a floating 1360×840 window.
-- Mock data only. Tile selection, hover feedback, Esc to clear selection, sidebar show/hide.
-- Keep the pinned Rune rev for this step; no dependency upgrade or backend work is needed.
-- The preview has no file operations. Navigation, search, menus and the view switch are not
-  wired yet. Leave those honest rather than pretending a mock click opened real files.
-- Verify the live render, the interaction handlers, and the existing four headless scenes.
+## Performance is part of every slice
 
-## M2: Menus and the keyboard model (not started)
-- Bump Rune only when required by a feature or fix; `verify.py` must still pass.
-- `views/menu.rs`: one data-driven component for the context menu, the Open With submenu,
-  dropdowns and selects. Anchored in-window, flipped to stay 8 pt inside, submenu at the
-  parent's right edge −6.
-- Submenu opens after 120 ms; safe triangle; keyboard (↑/↓, →/←, Enter, Esc, Home/End,
-  first-letter jump); outside click closes.
-- Glass popovers: `El::backdrop_blur(28.0)` (Rune takes the CSS value).
-- Keyboard model: a `keymap.rs` on `flea::keys` (four presets). The grid's 2D cursor in `on_key`
-  (Rune's focus groups are 1D). Type-to-search and `/`/`~` path entry as UI states; the Esc
-  ladder. Read `10-user-journeys.md` J2–J6 and `11-keybindings.md` first.
-- **Done when:** the full `grid-*` references match, menu included, and scripted keyboard runs
-  (`--script`) walk the menu and the grid.
+Design the work out before optimizing its implementation:
 
-## M3: Wire the backend: read-only browsing (deferred until after preview review)
-- Fork Flea's backend and its required shared code into the Rove repository, preserving MIT
-  notices and recording its upstream revision. `~/devcave/flea` stays a read-only reference.
-  No dependency on a separately installed Flea binary or on editing upstream is required.
-- Rove owns its state at `$XDG_STATE_HOME/rove/ui.json`; never modify Flea's state.
-- `backend/`: run the forked backend per pane; a client thread reads JSON lines and hands
-  batched events to the UI with `AppHandle::update_if`.
-- `list` (first screenful rides along), `window` when the held range drifts, `listing` on every
-  guarded request. Grid virtualized as rows of tiles (`virtual_rows`, columns from the width).
-- `thumb` for visible tiles only (256 px PNG paths), `thumbcancel` when they scroll away;
-  `dirsize`, `fsinfo`, `devs`; `changed` re-lists.
-- Navigation, history, tabs; sidebar places from XDG dirs; breadcrumb.
-- Icons: the backend sends an icon name per row. Until M6, map names to the reference PNGs and
-  a generic fallback.
-- **Done when:** browsing real folders works, the mock scenes still pass `verify.py`, and on
-  Flea's 100k fixture (`tools/flea-bench`, same machine) Rove's first window and settled times
-  are no worse than Flea 0.4.0's GPUI numbers (319 ms / 753 ms, list view). Add a frame-time
-  trace (`--trace`) while scrolling: no frame over 16 ms.
+- Directory size must not determine how many UI elements are built. Render visible rows
+  plus a bounded overscan, request held ranges in batches, and version virtualized data so
+  an unrelated state change does not scan every entry's key.
+- Keep filesystem I/O, decoding and heavy processing off Rune's UI thread. A backend
+  event should update the affected state, not trigger a full relist or redraw by default.
+- Ask for metadata and thumbnails only when the slice needs them. Cancel obsolete work,
+  reject stale replies, reuse cached results and bound caches/queues. No per-entry
+  threads, timers or wakeups. Do not keep rendering an idle window.
+- Measure the entire path: request → backend work → transfer → UI update → visible frame.
+  Flea's speed does not prove Rune's layout, text, rendering or event handling is cheap.
+- Record cold and warm first-visible times, settled time, p50/p95 frame times and worst
+  frames, memory, UI elements built and requests issued. Use small folders and the same
+  reproducible 100k-entry fixture, hardware, build profile and cache conditions each time.
+  Separate backend, IPC, UI-build, layout and render costs in traces where possible.
+- Aim for the display's frame budget (16.7 ms at 60 Hz); investigate repeatable stalls
+  rather than hiding them in averages. Compare against our recorded baseline and a
+  same-machine Flea run. Published Flea numbers are context, not a portable pass/fail gate.
+- If Rune is the bottleneck, make a minimal reproducer, test a targeted patch in the local
+  Rune checkout, and carry a reproducible pinned dependency patch only if it fixes the
+  measured problem. Do not upgrade Rune or change the visual design speculatively.
 
-## M4: List view, sort dropdown, inspector
-- List header and rows (`virtual_rows`, 32 px rows that never shrink), sort dropdown with check
-  slots, inspector panel. Real data from M3, plus a mock scene for the references.
-- **Done when:** the `list-dark-*` references match and the 100k list stays within M3's numbers.
+Save the commands, fixture details, build/revision information and before/after results
+with the slice under `.plan/`. If the specified visual design itself forces excessive
+work, bring the evidence to som2 for the designer; do not silently simplify it.
 
-## M5: Settings sheet
-- Scrim, sheet, nav, View page with cards, switches, segmented controls, stepper,
-  select + dropdown. Settings read and written through `flea::uistore`.
-- **Done when:** the `settings-dark-*` references match and changes persist.
+## Foundation already working
 
-## M6: Live theme and file icons
-- Watch `~/.local/state/omarchy/current/theme/colors.toml` (Rove's own watcher; Flea's exists
-  but is unused). Resolve per `03-theming.md`; animate with `Tx::color_motion(motion::CALM)`.
-- Freedesktop icon-theme lookup for the backend's icon names (start from Flea's
-  `openwith_icons.rs`): inherits, sizes, scalable, hicolor fallback. Drop the reference PNGs.
-- Hyprland Glass: transparent window, verified on a real session with blur on.
-- **Done when:** switching Omarchy themes recolours exactly the accent-driven parts and nothing
-  else; every theme in `tokens/omarchy-themes-resolved.json` resolves to its listed accent and ink.
+- Native mock GUI on pinned Rune `d6a0b3cc`: window, sidebar, toolbar, tabs, grouped file
+  grid and footer, with theme tokens, Inter and JetBrains Mono.
+- Tile hover/selection, Esc clearing, sidebar toggle, equal hidden-sidebar insets, bounded
+  grid scrolling and independently scrolling sidebar with pinned brand.
+- Four original material scenes, plus separate 90%-panel Glass review variants. The
+  original Glass tokens are unchanged.
+- `src/components/` organized by design component. Parts and behaviour tests live with
+  their owner. `src/app/` owns startup/shared state; `src/fixtures/` owns mock data/scenes.
+- Eleven tests and four reference checks pass. The reference-size checks alone do not
+  prove compact toolbar/footer correctness or real-directory performance.
 
-## M7: Actions
-- Clipboard through the backend (`clipSet/clipGet/clipWatch`, copy and cut), paste and
-  transfer with progress toasts, inline rename, trash + Undo toast, compress and extract, tags,
-  Open With, Copy Path, Properties. Reuse `flea::ui_logic_*` view-models where they fit.
-- **Done when:** journeys J8–J12 work end to end, each action undoable where the design says so.
+**Current delivery:** this component reorganization and slice plan. No backend is wired.
+**Next implementation:** S1, after this preparation is committed.
 
-## M8: Drag and drop on Wayland
-- Rune lacks Wayland file drops in and drags out. Options: file an issue upstream (they take
-  issues, not PRs) and/or carry a patch adding `wl_data_device` to Rune's vendored winit.
-  Start a spike during M3 to size it; the result decides the route.
-- Internal drags (within a window) work already (`on_drag`).
-- **Done when:** J9 (drag to copy or move, in and out of Rove) works on Hyprland.
+## S1 — Show one real directory in the grid
 
-## M9: `flea-core` and the in-process question
-- In Flea: move process-wide effects into `main`, explicit `Session::close()`, configured helper
-  paths, typed events serialized by the JSON binary.
-- Measure an in-process Rove against the child process (first paint, settled, PSS, crash
-  behaviour). Switch only on a measured win; keep the child as a fallback.
+**User result:** launch Rove with an explicit local directory and see its actual folders
+and files, not the Documents fixture. Read-only; no navigation or file actions yet.
 
-## Later
-Columns view, Two panes, Quick Look, search results, the Trash browser, network and devices
-flows, the file-chooser portal, a Properties sheet design, the remaining settings pages. Each
-gets its design from the designer first, using this same system.
+- **UI:** `components/file_grid/` owns the entry model, grouped rows and bounded viewport.
+  Feed real name/type data to tiles. Replace relevant title/count/footer fixture values
+  with the active directory's values. Do not invent metadata or show fixture devices as
+  real measurements. Preserve fixed mock scenes as a separate deterministic data source.
+- **Flea → Rove:** bring the listing/session/protocol code and the dependency closure
+  needed to build and run it into `crates/rove-backend/`. Record the upstream revision
+  and MIT notices. Inspect process startup and helper dependencies; do not strip them
+  blindly or call process-owning code in the UI process. No installed Flea dependency.
+- **Boundary:** child-process isolation first (`01-architecture.md`). Implement only the
+  required list/window/reply/shutdown path. Batch updates; use listing identities to
+  reject obsolete results. Virtualize rows of tiles and hold only a bounded UI range.
+  Keep the backend's directory index where needed; do not duplicate all rows into UI
+  elements. Use existing generic/theme icons, not new checked-in reference artwork.
+- **Tests:** a temporary directory with known folders/files, an empty directory, a failed
+  listing, stale replies, range changes and clean shutdown. Confirm the right names and
+  grouping reach the UI. All entries must remain reachable by scrolling.
+- **Performance:** instrument first-visible and settled time, UI work/range requests,
+  frame time and memory on small and 100k-entry directories. Establish the first real
+  end-to-end baseline; show that mounted UI work stays bounded by the viewport.
+- **Done:** a native read-only grid shows the chosen directory, errors do not freeze the
+  UI, the fork builds from this repository alone, tests/reference checks pass and the
+  measured baseline is recorded. One working feature commit.
+
+## S2 — Enter a folder and return
+
+**User result:** open a folder, go Up, Back and Forward, and see the correct location.
+
+- Extend grid activation, toolbar navigation and footer breadcrumbs together.
+- Bring the required Flea path/history helpers and request guards into the fork.
+  Cancel the old location's work and prevent late replies from replacing the new one.
+- Test parent/root handling, inaccessible targets, rapid navigation and history.
+  Measure navigation-to-first-visible and requests per location; avoid eager tree scans.
+- **Done:** navigation and displayed path/count agree end to end; mock scenes still pass.
+
+## S3 — Keep the displayed directory current
+
+**User result:** external changes and explicit Refresh update the current listing.
+
+- Connect the needed Flea watcher/changed/relist path to the active location only.
+  Preserve selection and scroll position by stable identity where possible.
+- Test create/remove/rename, watcher bursts, leaving a watched directory and stale replies.
+  Measure idle wakeups, relist frequency and burst handling; batch/coalesce changes.
+- **Done:** the grid becomes correct without reopening the folder, with no idle repaint loop.
+
+## S4 — Open a sidebar favourite
+
+**User result:** clicking Home, Documents or another configured place navigates there.
+
+- Resolve actual XDG user directories using the audited Flea place helpers. Sidebar
+  selection, grid location, toolbar and breadcrumbs must agree. No network/device UI
+  claims until those separate flows work.
+- Test missing/overridden XDG directories and repeated switching. Cache place discovery
+  instead of resolving it every frame.
+- **Done:** a sidebar click uses the same working navigation path as S2.
+
+## S5 — Select real entries with pointer and keyboard
+
+**User result:** select, extend, clear and move the selection over real directory entries.
+
+- Own grid cursor/selection beside `file_grid`; reflect it in the footer. Bring only the
+  keymap and selection helpers that match `11-keybindings.md` and the relevant journeys.
+- Test 2D movement, range/toggle selection, focus, wrapping after resize, stale/deleted
+  entries and scrolling to an unmounted selected row. Do not scan all entries on every key.
+- **Done:** the selected real entries and footer summary agree across navigation/refresh.
+
+## S6 — Switch between grid and list
+
+**User result:** switch presentation without changing directory or losing selection.
+
+- Add the designed list component, backed by the same listing/range model as the grid;
+  use virtual 32 px rows. Do not launch another backend or duplicate the full directory.
+- Test both directions of the switch, range requests and selection/focus continuity.
+  Capture the list references and measure UI/frame/memory costs on the large fixture.
+- **Done:** both presentations browse the same real entries with bounded mounted work.
+
+## Following slices: one behaviour per commit
+
+Choose these in order of user value and dependencies, keeping the same acceptance gates.
+Read the relevant design and journeys before starting each one; split further when needed.
+
+- **Change sorting:** sort dropdown → backend ordering → stable/reloaded listing.
+  Build the reusable in-window menu here, including its designed keyboard behaviour,
+  bounds, submenu timing/safe triangle where needed. No standalone menus milestone.
+- **Show file icons:** backend icon name → freedesktop theme lookup → cached tile/list art.
+  Audit Flea's app-icon resolver before adapting it; keep GPL reference images local.
+- **Show real thumbnails:** visible entry → cancellable Flea thumbnail request → decoded
+  image. Prove off-screen work is cancelled and cache/decoding memory stays bounded.
+- **Open a file:** activation → audited Flea launcher → system application, with errors.
+- **Open With:** menu/submenu → application discovery → chosen launcher; reuse and test
+  the existing menu rather than building a separate UI-only screen.
+- **Rename:** inline editor → guarded backend rename → refreshed identity/selection.
+- **Trash and Undo:** guarded trash operation → listing update/toast → designed undo.
+- **Copy, cut and paste:** selection → Flea file clipboard → guarded transfer/progress.
+  Reuse the backend's Wayland clipboard support; Rune text clipboard is not file cut.
+- **Persist view preferences:** one working setting at a time → component behaviour →
+  Rove's own store at `$XDG_STATE_HOME/rove/ui.json`. Add the corresponding settings
+  controls with the feature, not an entire nonfunctional settings sheet first.
+- **Follow the live theme:** theme change → watcher → token resolution → affected
+  components, with no unrelated relisting or per-entry updates.
+- **Drag files:** the designed internal/external copy/move flow → transfer completion.
+  Rune's Wayland drop-in and Linux drag-out gaps require a measured framework spike
+  within this slice; verify on Hyprland, not only headlessly.
+- **Inspect properties, compress/extract, tags:** separate end-to-end slices, not a single
+  "Actions" batch. Get any missing Properties design through som2 first.
+
+Columns, two panes, Quick Look, search results, Trash browsing, remote/device flows,
+the file-chooser portal and remaining settings pages also follow this rule. Missing
+visual specifications and compact layouts go to the designer before implementation.
+
+## Optional backend/library extraction
+
+This is not a prerequisite or a promised final milestone. When a concrete slice or a
+profile justifies it, isolate process-wide stdio, allocator, signals/limits, helpers and
+shutdown in Rove's fork. Compare child-process and in-process implementations on the
+same workload (latency, memory and crash behaviour). Switch only on evidence and keep
+a child-process route where it is useful. Never patch the reference Flea checkout.
+
+## Commit and publication gate
+
+- Run `cargo test -p rove-ui`, `cargo clippy -p rove-ui --all-targets -- -D warnings`,
+  `cargo build -p rove-ui`, then `python3 -I tools/verify.py`.
+- Include native/end-to-end tests and recorded performance evidence for the slice,
+  not just mock screenshot matches. Preparation-only commits do not claim such evidence.
+- Preserve unrelated owner edits. Review the staged diff and the public branch history.
+- Keep WhiteSur icons, wallpaper, derived screenshots and other excluded third-party
+  art out of commits, including renamed copies. Publish only the audited `main` branch;
+  never `--mirror`, all refs, or the local saved history containing the original art.

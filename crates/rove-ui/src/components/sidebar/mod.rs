@@ -1,38 +1,43 @@
 //! Sidebar: brand, Favourites, Tags, Network, Devices (04-layout.md › Sidebar).
 
-use rune::{El, col, el, icon, row, spacer};
+use rune::{El, ScrollSpec, col, el, icon, row, spacer};
 
 use crate::icons;
-use crate::State;
-use crate::mock::{self, RemoteState};
+use crate::app::State;
+use crate::fixtures::{self, RemoteState};
 use crate::theme::{Tokens, type_};
-use crate::views::{icon_button, label, nth};
+use crate::components::{icon_button, label, nth};
+
+#[cfg(test)]
+mod tests;
 
 pub fn view(t: &Tokens) -> El {
-    let mut side = col().key("sidebar").w(244.0).min_w(244.0).h_full()
+    let side = col().key("sidebar").w(244.0).min_w(244.0).h_full().min_h(0.0)
         .pt(12.0).pr(10.0).pb(12.0).pl(12.0)
-        .child(brand(t))
+        .child(brand(t));
+    let mut list = col().key("sidebar.content").grow(1.0).min_h(0.0)
+        .scroll(ScrollSpec { stick_bottom: false })
         .child(section("sidebar.section-label", "Favourites", None, t));
     let mut plain = 0;
-    for (i, place) in mock::FAVOURITES.iter().enumerate() {
-        let selected = i == mock::CURRENT_PLACE;
+    for (i, place) in fixtures::FAVOURITES.iter().enumerate() {
+        let selected = i == fixtures::CURRENT_PLACE;
         let key = if selected { "sidebar.row.selected".to_string() } else { plain += 1; nth("sidebar.row", plain - 1) };
-        side = side.child(place_row(key, place.icon, place.name, selected, None, t));
+        list = list.child(place_row(key, place.icon, place.name, selected, None, t));
     }
-    side = side.child(section("sidebar.section-label#1", "Tags", Some((&icons::MORE, 16.0)), t)).child(tag_dots(t));
-    side = side.child(section("sidebar.section-label#2", "Network", Some((&icons::PLUS, 14.0)), t));
-    for (i, remote) in mock::NETWORK.iter().enumerate() {
+    list = list.child(section("sidebar.section-label#1", "Tags", Some((&icons::MORE, 16.0)), t)).child(tag_dots(t));
+    list = list.child(section("sidebar.section-label#2", "Network", Some((&icons::PLUS, 14.0)), t));
+    for (i, remote) in fixtures::NETWORK.iter().enumerate() {
         let end = match remote.state {
             RemoteState::Connected => el().size(8.0, 8.0).radius(4.0).fill(t.success),
             RemoteState::Offline(s) => label(s, type_::ROW_END, t.t3),
         };
-        side = side.child(place_row(nth("sidebar.row.net", i), remote.icon, remote.name, false, Some(end), t));
+        list = list.child(place_row(nth("sidebar.row.net", i), remote.icon, remote.name, false, Some(end), t));
     }
-    side = side.child(section("sidebar.section-label#3", "Devices", None, t));
-    for (i, dev) in mock::DEVICES.iter().enumerate() {
-        side = side.child(device(i, dev, t));
+    list = list.child(section("sidebar.section-label#3", "Devices", None, t));
+    for (i, dev) in fixtures::DEVICES.iter().enumerate() {
+        list = list.child(device(i, dev, t));
     }
-    side
+    side.child(list)
 }
 
 fn brand(t: &Tokens) -> El {
@@ -85,7 +90,7 @@ pub fn tag_dot(key: String, c: rune::Color) -> El {
 }
 
 /// A device block (`.dev`): padding 7 10 9, gap 6; name row, capacity bar, caption.
-fn device(i: usize, dev: &mock::Device, t: &Tokens) -> El {
+fn device(i: usize, dev: &fixtures::Device, t: &Tokens) -> El {
     let mut top = row().items_center().gap(10.0)
         .child(icon(dev.icon, 18.0).color(t.t3))
         .child(label(dev.name, type_::BODY, t.t2).grow(1.0));

@@ -19,11 +19,14 @@ pub enum Material { Glass, Solid }
 #[derive(Clone, Debug)]
 pub struct Tokens {
     pub mode: Mode,
+    #[expect(dead_code, reason = "Complete design contract; future settings use the material.")]
     pub material: Material,
     // Surfaces
     pub base: Color,        // window background + sidebar (translucent in Glass)
     pub panel: Color,       // floating content panel
+    #[cfg_attr(not(test), expect(dead_code, reason = "Complete design contract; popover components are not implemented yet."))]
     pub popover: Color,     // menus, dropdowns, toasts, sheets
+    #[expect(dead_code, reason = "Complete design contract; future popovers use this blur.")]
     pub backdrop_blur: f32, // in-app blur for popovers in Glass (El::backdrop_blur, CSS px); 0 in Solid
     // Text
     pub t1: Color, pub t2: Color, pub t3: Color, pub t4: Color,
@@ -33,7 +36,9 @@ pub struct Tokens {
     // Accent (from the theme, contrast-fixed)
     pub accent: Color, pub accent_soft: Color, pub accent_line: Color, pub ink: Color,
     // Status (Rove's own, never from the theme)
-    pub danger: Color, pub warning: Color, pub success: Color,
+    #[expect(dead_code, reason = "Complete design contract; destructive actions are not wired yet.")]
+    pub danger: Color,
+    pub warning: Color, pub success: Color,
     // Tags (from the theme)
     pub tags: [Color; 7],
     // Mode-specific details (02-tokens.md, "Light-mode specifics")
@@ -58,6 +63,7 @@ pub struct Shadows {
     /// Light mode's active tab chip (Dark uses fill2 and no shadow).
     pub tab_on: Vec<Shadow>,
     /// CSS `filter: drop-shadow` under icon-theme icons: (y, blur radius, colour).
+    #[expect(dead_code, reason = "Complete design contract; reference assets currently prepare their own shadows.")]
     pub icon_drop: (f32, f32, Color),
     /// Thumbnail ring (1 px spread) plus its drop shadow.
     pub thumb: [Shadow; 2],
@@ -208,7 +214,7 @@ pub fn resolve(theme: &OmarchyTheme, material: Material) -> Tokens {
     }
 }
 
-/// Where the active theme lives on Omarchy. Watched from Milestone 5.
+/// Where the active theme lives on Omarchy. Watching belongs to the live-theme slice.
 #[allow(dead_code)]
 pub fn current_theme_path() -> std::path::PathBuf {
     let home = std::env::var_os("HOME").map(std::path::PathBuf::from).unwrap_or_default();

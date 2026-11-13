@@ -1,8 +1,10 @@
-//! The reference data (Milestones 1 to 4): `~/Documents`, 6 folders, 10 files,
+//! Fixed preview and reference data: `~/Documents`, 6 folders, 10 files,
 //! `shore-at-dusk.jpg` selected, `forest-walk.jpg` hovered. Exactly what the reference HTML shows.
 
 use crate::icons;
 use rune::text::Icon;
+
+pub mod scenes;
 
 pub struct Place {
     pub icon: &'static Icon,

@@ -4,14 +4,17 @@
 
 use rune::{Cx, El, col, el, row};
 
-use crate::State;
+use crate::app::State;
 use crate::theme::Tokens;
-use crate::views::{footer, grid, sidebar, tabs, toolbar};
+use crate::components::{file_grid, footer, sidebar, tabs, text, toolbar};
+
+#[cfg(test)]
+mod tests;
 
 pub const WINDOW_SIZE: (f32, f32) = (1360.0, 840.0);
 
 pub fn view(s: &State, cx: &mut Cx<State>) -> El {
-    crate::views::text::set_scale(cx.env().scale);
+    text::set_scale(cx.env().scale);
     let t = &s.tokens;
     let mut body = row().w_full().h_full();
     if s.sidebar_visible {
@@ -38,7 +41,7 @@ pub fn view(s: &State, cx: &mut Cx<State>) -> El {
 fn panel(s: &State) -> El {
     let t: &Tokens = &s.tokens;
     col().key("panel").grow(1.0).min_w(0.0).min_h(0.0)
-        .mt(8.0).mr(8.0).mb(8.0)
+        .mt(8.0).mr(8.0).mb(8.0).ml(if s.sidebar_visible { 0.0 } else { 8.0 })
         .radius(12.0)
         .fill(t.panel)
         .border(1.0, t.line)
@@ -46,6 +49,6 @@ fn panel(s: &State) -> El {
         .clip_rounded(12.0)
         .child(toolbar::view(s))
         .child(tabs::view(t))
-        .child(grid::view(s))
+        .child(file_grid::view(s))
         .child(footer::view(s))
 }

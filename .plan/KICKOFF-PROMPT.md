@@ -1,5 +1,8 @@
 # Paste this into Claude Code on your machine
 
+Historical scaffold request, completed. Do not use this as the current task:
+`docs/08-milestones.md` now defines the vertical-slice sequence.
+
 > I'm building **Rove**, a redesign of the Flea file manager (github.com/thisisgm/flea), as a new
 > UI on the **Rune** GPU UI framework (github.com/anomalyco/rune), keeping Flea's backend.
 > The complete design handoff is in `./rove-handoff/`. Read `rove-handoff/README.md`, then

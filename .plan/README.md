@@ -7,14 +7,16 @@ backend (`flea --backend`, JSON lines).
 This folder is everything a coding agent needs to build the design exactly. The colours,
 sizes, type and spacing are specified, not suggested.
 
-**To start building:** paste `KICKOFF-PROMPT.md` into Claude Code.
+**To continue building:** use `docs/08-milestones.md` for the current vertical-slice sequence
+and `docs/01-architecture.md` for component/backend boundaries. `KICKOFF-PROMPT.md` is the
+historical scaffold request; that work is complete.
 
 ## Read in this order
 
 | # | File | What it gives you |
 |---|---|---|
 | 1 | `SHAPE.md` | The pitch: problem, appetite, solution, rabbit holes, no-gos. |
-| 2 | `docs/08-milestones.md` | The build plan in steps. **Start with Milestone 1: a static, non-functional grid view.** |
+| 2 | `docs/08-milestones.md` | Current vertical-slice plan. **Next: S1, show one real directory in the grid.** |
 | 3 | `docs/02-tokens.md` + `tokens/tokens.json` | Every colour, type style, radius and shadow, for Dark/Light × Glass/Solid. |
 | 4 | `docs/03-theming.md` | Exactly what the Omarchy theme changes (three things) and what it never changes. |
 | 5 | `docs/04-layout.md` + `reference/redlines.json` | Pixel geometry of every region and element, measured from the reference. |
